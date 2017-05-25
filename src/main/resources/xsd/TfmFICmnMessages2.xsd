@@ -1,0 +1,3514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="urn:us:gov:dot:faa:atm:tfm:ficommonmessages2" 
+            xmlns:fce="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" 
+            xmlns:nxce="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" 
+            xmlns:fcm="urn:us:gov:dot:faa:atm:tfm:ficommonmessages" 
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:ficommonmessages2" 
+            version="2.0.5" 
+            elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" schemaLocation="FICommonDataTypes.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommonmessages" schemaLocation="FICommonMessages.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:simpleType name="altitudeType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Fields 08a, 09a. Altitude or Flight Level in hundreds of feet. Format: (d)dd</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{2,3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="altFixAltType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Fields 08, 09. Components: preFixAltitude fixDesignation postFixAltitude. If the flight has not reached the specified fix or if it has been assigned tentative flight plan storage only, the first altitude will be used for the reported altitude. If the flight is at or past the specified fix the second altitude will be used for the reported altitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="preFixAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>NAS Field Reference: NA Altitude of flight prior to traversing the fix indicated by the fixDesignation element.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fixDesignation" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>NAS Field Reference: NA Fix at which the altitude of the flight transitions from the altitude indicated by the preFixAltitude element to the altitude indicated by the postFixAltitude element.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="postFixAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>NAS Field Reference: NA Altitude of flight following the traversal of the fix indicated by the fixDesignation element.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="blockedAltitudesType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Field 08, 09. Components: (lowerAltitude) (higherAltitude) A block of altitudes or flight levels.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="lowerAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Lower altitude of a blocked altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="higherAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Higher or upper Altitude of a blocked altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="minimumExclusiveAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Field 08, 09 NAS Format: LLLddd where LLL = ABV Aircraft operating above the specified altitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="aboveDesignator" fixed="ABV">
+        <xsd:annotation>
+          <xsd:documentation>'Above' indicator ABV.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="ABV"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="altitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="filedAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Field 08, 09 NAS Format: Multiple formats. Refer to documentation of the choice types.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="baseAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Altitude in hundreds of feet.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="vfrOnTop" type="vfrOnTopType">
+        <xsd:annotation>
+          <xsd:documentation>Visual Flight Rules On Top; format: OTP/(d)dd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="blockedAltitudes" type="blockedAltitudesType">
+        <xsd:annotation>
+          <xsd:documentation>Block of Altitudes; format: (d)ddB(d)dd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altFixalt" type="altFixAltType">
+        <xsd:annotation>
+          <xsd:documentation>Altitude/Fix/Altitude; format: (d)dd/FIX/(d)dd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="minimumExclusiveAltitude" type="minimumExclusiveAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Minimum Exclusive Altitude; format: ABV(d)dd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="vfr" type="vfrAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Visual Flight Rules; format: VFR/(d)dd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="reportedAltitude" type="nxce:reportedAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Reported altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="filedFixType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Field 06, sub element of Field 10. Any geographical point filed with/in the flight plan.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="latLong" type="nxce:latlongType">
+        <xsd:annotation>
+          <xsd:documentation>A fix that was filed as a latitude and longitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fixName" type="nxce:fixNameType">
+        <xsd:annotation>
+          <xsd:documentation>A fix that was filed by name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fixRadialDistance" type="nxce:fixRadialDistanceType">
+        <xsd:annotation>
+          <xsd:documentation>A fix that was filed as a Fix Radial Distance. Refer to the fixRadialDistanceType documentation for details.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+    <xsd:attribute name="delayTimeAtFix" type="nxce:delayDataType">
+      <xsd:annotation>
+        <xsd:documentation>Delay time at fix.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="vfrOnTopType">
+    <xsd:annotation>
+      <xsd:documentation>VFR on Top type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="vfrOnTopDesignator">
+        <xsd:annotation>
+          <xsd:documentation>VFR on Top Designator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altitude" type="altitudeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="vfrAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Documentation currently under evaluation</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="vfrDesignator" fixed="VFR">
+        <xsd:annotation>
+          <xsd:documentation>VFR designator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altitude" type="altitudeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="flightStateType">
+    <xsd:annotation>
+      <xsd:documentation>Flight State Type defines the enumerated values which describe the overall status of a flight: PLANNED, ACTIVE, CANCELED, or COMPLETED.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PLANNED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight in the pre-departure state.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ACTIVE">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight state as in the active or in-flight state.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CANCELED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the flight has been canceled.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="COMPLETED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "COMPLETED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="specialSlotType">
+    <xsd:annotation>
+      <xsd:documentation>A special case for Slot Lists. ASLOT field may contain one of these values instead of a slot definition.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNUSED"></xsd:enumeration>
+      <xsd:enumeration value="UNASSIGNED"></xsd:enumeration>
+      <xsd:enumeration value="UNAVAILABLE"></xsd:enumeration>
+      <xsd:enumeration value="PURGED_PLANNED"></xsd:enumeration>
+      <xsd:enumeration value="PURGED_ACTIVE_COMPLETED"></xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="ctopUniqueIdType">
+    <xsd:annotation>
+      <xsd:documentation>The system generated unique identifier for the CTOP TMI.
+                      Has the following format:
+                      {ctoptmi}{.}&lt;site&gt;{.}&lt;workstation&gt;{.}&lt;creationdate/time&gt;</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="ctoptmi\.[A-Za-z0-9]{1,8}\.\w{1,8}\.\d{14}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="ctopTmiShortNameType">
+    <xsd:annotation>
+      <xsd:documentation>System generated unique identifier for the CTOP</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="CTP\d{3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="flagType">
+    <xsd:annotation>
+      <xsd:documentation>. Format is Y if true, - if false.</xsd:documentation>
+      <xsd:appinfo>
+        <errorCode>ERR399</errorCode>
+        <errorMsg>UNKNOWN SYNTAX ERROR.</errorMsg>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Y"/>
+      <xsd:enumeration value="-"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="canceledStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the cancel status and the reasons.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="canceled" type="flagType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Defines the cancel status and the reasons Yes or -.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="UX" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled due to an EDCT UPDATE cancel. An Authorized FAA User may utilize the EDCT UPDATE command to cancel a flight that is part of a TMI.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="FX" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an FX message has been processed for this flight canceling the flight. An FX message is the CDM message used by a CDM Participant to indicate a flight is not operating.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RZ" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled and an RZ message has been processed for this flight. An RZ message is a NAS flight plan cancel message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RS" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled and an RS message has been processed for this flight. An RS message is an internal TFMS message generated when an Authorized FAA User takes an OAG flight out of the database.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TO" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled due to having been timed out by TFMS-Core. TFMS-Core times out a flight when no activation message has been received within a certain time of the predicted departure time. The time out logic for flights departing the 20 Continental United States (CONUS), seven Canadian, Honolulu (ZHN/PHZH) and Anchorage (ZAN/PAZA) Centers is as follows: 1) If NAS messages have been received for a flight, TFMS-Core times out the flight 90 minutes after its predicted departure time. 2) If only OAG data or CDM messages have been received for a flight, TFMS-Core times out the flight five minutes after departure time. TFMS-Core does not time out flights departing from other regions of the world.
+</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DV" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled and was diverted to an alternate destination. The diversion may have come from either a NAS flight plan or a CDM modify (FM) message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="RM" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight that has been manually removed by an Authorized FAA User.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DP" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight that has been cancelled for being a duplicate.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ID" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight that has been cancelled because it is an International departure that never took off.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CNL" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled and a CNL message has been processed for this flight. A CNL message is an IADE flight plan cancel message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="delayStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the delay status and the reasons for a flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="delayed" type="flagType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Defines the delay status and the reasons Yes or -.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ALD" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the CDM Participant has at some point sent in a departure time estimate (via an FC or FM) for a flight that was later than the estimate previously in the database.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="GDP" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the flight has at some point been controlled by a GDP-Initial or GDP-Revision.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="AFP" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the flight has at some point been controlled by an AFP-Initial or AFP-Revision.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the flight has at some point been controlled by a CTOP-Initial or CTOP-Revision.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DAS" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that a DAS delay has been applied to this flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="GSD" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the flight has at some point been part of a GDP-Ground Stop program.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TOD" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that TFMS-Core is delaying this flight due to the fact that it has not departed as projected. The TOD status precedes a time out cancel (TO). A time out delay occurs when a flight has a flight plan message, its departure time is in the past, and it has not been activated yet. In this case, TFMS-Core moves the flight back in time in 5-minute increments until cancelled by time out logic (see TO field). If TFMS-Core receives a new message for this flight moving its departure time into the future, the TOD flag is cleared indicating that the flight is no longer in time out delay. Time out delay logic is applied only to the same flight as time out cancel logic (see TO field).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="conformanceStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Enumerated text indicating whether the flight is conformant with the reroute.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="C"/>
+      <xsd:enumeration value="NC"/>
+      <xsd:enumeration value="UNKN"/>
+      <xsd:enumeration value="EXC"/>
+      <xsd:enumeration value="OK"/>
+      <xsd:enumeration value="NC/OK"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="daysOfOperationType">
+    <xsd:annotation>
+      <xsd:documentation>Specifies the days of the week this flight is to be in operation. Enter seven characters, each specifying a day of the week, beginning with Sunday. Enter X for each day the flight is to be scheduled; Enter O for each day the flight is not to be scheduled.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(X|O){7}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="originationType">
+    <xsd:annotation>
+      <xsd:documentation>Flights that have only OAG or CDM messages.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OAG"/>
+      <xsd:enumeration value="CDM"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="controlTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the source type of the current control times for a flight (e.g. GDP).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CTOP"/>
+      <xsd:enumeration value="GDP"/>
+      <xsd:enumeration value="AFP"/>
+      <xsd:enumeration value="GS"/>
+      <xsd:enumeration value="BLKT"/>
+      <xsd:enumeration value="COMP"/>
+      <xsd:enumeration value="BRG"/>
+      <xsd:enumeration value="DAS"/>
+      <xsd:enumeration value="GAAP"/>
+      <xsd:enumeration value="UDP"/>
+      <xsd:enumeration value="RCTL"/>
+      <xsd:enumeration value="SUB"/>
+      <xsd:enumeration value="SCS"/>
+      <xsd:enumeration value="ECR"/>
+      <xsd:enumeration value="UPD"/>
+      <xsd:enumeration value="ABRG"/>
+      <xsd:enumeration value="SBRG"/>
+      <xsd:enumeration value="UBRG"/>
+      <xsd:enumeration value="ADPT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="controlledFlightType">
+    <xsd:annotation>
+      <xsd:documentation>This type defines a controlled flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="commonCompositeFlightId">
+        <xsd:annotation>
+          <xsd:documentation>This type defines a controlled flight.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="flightReference" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>Flight reference number.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:sequence minOccurs="0">
+              <xsd:element name="callSign" type="nxce:aircraftIdType">
+                <xsd:annotation>
+                  <xsd:documentation>Aircraft call sign or aircraft identifier.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="departureAirport" type="nxce:airportIdType">
+                <xsd:annotation>
+                  <xsd:documentation>Departure airport.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="arrivalAirport" type="nxce:airportIdType">
+                <xsd:annotation>
+                  <xsd:documentation>Arrival airport.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="departureDateTime" type="xsd:dateTime">
+                <xsd:annotation>
+                  <xsd:documentation>Departure date and time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="assignedArrivalSlot" type="fce:slotNameType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Assigned slot.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlledDepartureTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Controlled departure time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlledArrivalTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Controlled arrival time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="exemptFlag" type="nxce:flagType">
+        <xsd:annotation>
+          <xsd:documentation>Exempt indicator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cancelFlag" type="nxce:flagType">
+        <xsd:annotation>
+          <xsd:documentation>Cancel indicator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="slotHoldFlag" type="nxce:flagType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Slot hold indicator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="earliestRunwayArrivalTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Earliest runway arrival time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="earliestEntryTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Earliest entry time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="initialGateDepartureTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Initial Gate Departure Time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="ctopExemptReasonType">
+    <xsd:annotation>
+      <xsd:documentation>CTOP exemption reason.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTIVE"/>
+      <xsd:enumeration value="AFP"/>
+      <xsd:enumeration value="ANOTHER_CTOP"/>
+      <xsd:enumeration value="GDP"/>
+      <xsd:enumeration value="GS"/>
+      <xsd:enumeration value="MANUAL"/>
+      <xsd:enumeration value="ACID"/>
+      <xsd:enumeration value="INTERNATIONAL"/>
+      <xsd:enumeration value="TIME"/>
+      <xsd:enumeration value="ARR_ARPT"/>
+      <xsd:enumeration value="DEP_ARPT"/>
+      <xsd:enumeration value="ARR_ARTCC"/>
+      <xsd:enumeration value="DEP_ARTCC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="trajAltTypeHundred">
+    <xsd:annotation>
+      <xsd:documentation>The requested cruising altitude in hundreds of feet.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="trajAltTypeFeet">
+    <xsd:annotation>
+      <xsd:documentation>The requested cruising altitude in feet.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{1,5}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="slotDataType">
+    <xsd:annotation>
+      <xsd:documentation>Slot data that provided in the AFP/GDP/GS flight list.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="CR_TIME" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Used to indicate how long TFMS-Core has known of the flight. For FEA/FCA it is the time the flight was first detected to be intersecting the FEA/FCA.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="assignedArrivalSlot" type="fce:slotNameType">
+          <xsd:annotation>
+            <xsd:documentation>When a TMI is issued, each controlled flight is assigned an arrival slot. The format consists of the following: Control element name: 3 or 4 characters describing airport or FCA Slot date and time: 6 digits: ddhhmm It is zero padded if necessary (e.g., 06). 1-letter suffix: The suffix letter is used to ensure that slot name is unique.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="specialSlot">
+          <xsd:annotation>
+            <xsd:documentation>A special case for Slot Lists. ASLOT field may contain "PURGED" or "REMOVED" instead of a slot definition.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="specialSlotType"/>
+          </xsd:simpleType>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:element name="CTL_EXEMPT" type="nxce:flagType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight was categorized as exempt (for example, due to departure time status or departure center) when the GDP-Initial, GDP-Revision, AFP-Initial, or AFP-Revision was computed. One of two entries: Y (if true) (if false)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cancelStatus" type="canceledStatusType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently cancelled. A flights CX flag will be true if any Cancel Field (UX, FX, RZ, RS, TO, DV, or RM) is true. One of two entries: Y (if true) (if false)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="delayStatus" type="delayStatusType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates whether the flight is currently delayed.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SL_HOLD" type="nxce:flagType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>If a flight is controlled and cancelled (i.e., has a CTD, CTA, and ASLOT), the Slot Hold flag indicates whether the slot associated with this flight is being held, or would be held, by the NAS User for the next compression. The compression algorithm will not automatically fill slots that are held. If a flight is not controlled the slot hold has no effect, although users may set the slot hold in anticipation of a flight becoming controlled. A slot hold may only be set for flights that are cancelled. One of two entries: Y (if true) (if false)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="earliestRunwayArrivalTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>ERTA or EENTRY The earliest arrival time that the airline would like to have assigned to this flight in a ground delay program. If the airline has sent this field in a CDM FC or FM message, then the most recent such time is contained in this field. Otherwise, the value will not appear. Format is ddhhmm.(Only applies to GDP Slot List) or The earliest possible entry time into the FEA or FCA, as calculated by TFMS. This field is used to ensure that a flight will not be assigned a slot for an FEA/FCA that it cannot use. Since the CDM Participants do not send earliest entry times for an FEA/FCA, TFMS will compute this value by first determining the earliest ETA (EETA), then applying any delta to the ENTRY time. Format is ddhhmm.(Only applies to AFP Slot List)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="wrappedSlotListType">
+    <xsd:annotation>
+      <xsd:documentation>An original legacy SlotList message as-is. A simple wrapper.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:complexType name="rankDemotionType">
+    <xsd:annotation>
+      <xsd:documentation>CTOP rank demotion type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element name="CTOP_IDFR" type="fce:idfrType">
+        <xsd:annotation>
+          <xsd:documentation>CTOP reference number.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_SHORT_NAME" type="ctopTmiShortNameType">
+        <xsd:annotation>
+          <xsd:documentation>CTOP short name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CURRENT_RANK" type="fcm:ctopRankType">
+        <xsd:annotation>
+          <xsd:documentation>Current rank.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="NEW_RANK" type="fcm:ctopRankType">
+        <xsd:annotation>
+          <xsd:documentation>New rank.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+  <xsd:simpleType name="fadtParmType">
+    <xsd:annotation>
+      <xsd:documentation>Delay Program Type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AFP"/>
+      <xsd:enumeration value="GDP"/>
+      <xsd:enumeration value="GS"/>
+      <xsd:enumeration value="BLKT"/>
+      <xsd:enumeration value="COMP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="fadtDelayModeType">
+    <xsd:annotation>
+      <xsd:documentation>Delay Mode Type: DAS, GAAP, or UDP.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DAS"/>
+      <xsd:enumeration value="GAAP"/>
+      <xsd:enumeration value="UDP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the possible types of TMIs.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AFP"/>
+      <xsd:enumeration value="GDP"/>
+      <xsd:enumeration value="GS"/>
+      <xsd:enumeration value="BLKT"/>
+      <xsd:enumeration value="COMP"/>
+      <xsd:enumeration value="CTOP"/>
+      <xsd:enumeration value="FXA"/>
+      <xsd:enumeration value="REROUTE"/>
+      <xsd:enumeration value="TACTICAL_REROUTE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="flowFltDataType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the flight's AFP/GDP/GS unique data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="slotData" type="slotDataType">
+        <xsd:annotation>
+          <xsd:documentation>AFP/GDP/GS unique data associated with the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SUB" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>if true indicates whether any NAS user has substitution rights for this flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fcaIdReference" type="fcm:fcaIdType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>If AFP, it provides a reference to the FXA where FXA unique flight data may be obtained.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="flowFltListType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the list flight candidates/members for/of AFP/GDP/GS TMIs.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="flightDataList" type="genFlightDataType" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>List of flights.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="genFlightDataType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the flight list updates for all TMIs.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="flight" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Defines the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightReference" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Defines the flight reference that can be used to correlate flight data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="status" type="flightStateType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft state of PLANNED, ACTIVE, CANCELED, or COMPLETED. PLANNED is equivalent to PROPOSED</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="engineClass" type="nxce:aircraftEngineClassType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft engine class.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="weightClass" type="nxce:generalAircraftWeightType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft weight class.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="aircraftCategory" type="nxce:generalAircraftCategoryType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft weight class.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="userCategory" type="nxce:generalAircraftUserClassType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft user category.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="hasMonitoredDepApt" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>If true Flight's departure airport is monitored.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="hasMonitoredArrApt" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>If true Flight's arrival airport is monitored.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="IGTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Initial Gate Time of Arrival is the very first initial gate departure time of the flight. IGTA is set when a flight is first created, if it is created from OAG data, CDM Participant data (from CDM message), or flight plan data, the IGTD is set to the gate departure time from that source, thereafter it is never changed. If a flight is created from an "active" message (e.g., , departure message, airborne flight plan, etc.), the IGTA is not present.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ARTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>ARTD is the time from a NAS DZ message. If no DZ has been received, this field is not present.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ARTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>ARTA is the time from a NAS AZ message. If no AZ has been received, this field is not present.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SGTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>SGTD is Scheduled Gate Time of Departure time from OAG. Not present if no OAG data available for the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SGTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>SGTA is Scheduled Gate Time of Arrival time from OAG. Not present if no OAG data available for the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PGTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Departure time from NAS flight plan. Null if no flight plan has been received for the flight. If multiple flight plans have been processed, shows the P time from the last one.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PGTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival time from NAS. Generally this is initially set from the flight plan, and then updated when AFs, DZs and/or UZs are processed. Not present if no NAS arrival time has been received for the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="PETE" type="xsd:positiveInteger" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The PETE field is needed because the PGTD and PGTA pair does not preserve the ETE filed by the flight operator on the flight plan. PETE is set when a NAS flight plan has been received for this flight with an ETE field, PETE is set to the latest flight plan value received. if no flight plan is received the field is not present. PETE is in units of minutes.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LGTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Predicted gate time of departure provided by the CDM Participant in a CDM message. If a CDM Participant has sent in a gate departure time in a CDM message, then this field contains the most recent such time. Otherwise, this field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="EOBT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Earliest Off Block Time provided by the CDM Participant in a CDM message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LGTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Predicted gate time of arrival provided by the CDM Participant in a CDM message. If a CDM Participant has sent in a gate arrival time in a CDM message, then this field contains the most recent such time. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LRTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Predicted runway time of departure provided by the CDM Participant in a CDM message. If a CDM Participant has sent in a runway departure time in a CDM message, then this field contains the most recent such time. Otherwise, this field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LRTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Predicted runway time of arrival provided by the CDM Participant in a CDM message. If a CDM Participant has sent in a runway arrival time in a CDM message, then this field contains the most recent such time. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ERTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The earliest departure time that the CDM Participant would like to have assigned to this flight in a TMI. If the CDM Participant has sent this field in a CDM FC or FM message, then the most recent such time is contained in this field. Otherwise, this field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ERTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The earliest arrival time that the CDM Participant would like to have assigned to this flight in a TMI. If the CDM Participant has sent this field in a CDM FC or FM message, then the most recent such time is contained in this field. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OUT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The time at which a flight pushed out from the gate as reported by the CDM Participant via a CDM message. If the CDM Participant sends more than one value, the most recently submitted time is contained in this field. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="IN" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The time at which a flight pulls in at the gate as reported by the CDM Participant via a CDM message. If the CDM Participant sends more than one value, the most recently submitted time is contained in this field. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OFF" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The time at which a flight lifts off from the runway as reported by the CDM Participant via a CDM message. If the CDM participant sends more than one value, the most recently submitted time is contained in this field. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ON" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The time at which a flight touches down on the runway as reported by the CDM Participant via a CDM message. If the CDM participant sends more than one value, the most recently submitted time is contained in this field. Otherwise, the field is absent.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OETD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>OETD is used to save the ETD last modeled by TFMS-Core before either a TMI is issued, or the flight departs, or the flight is time-out delayed by TFMS-Core. The OETD is used to back out of a TMI. The OETD is different from the BETD in that it does NOT include any time-out delay modeled by TFMS-Core whereas the BETD does include time-out delay.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OETA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>OETA is used to save the ETA last modeled by TFMS-Core before either a TMI is issued, or the flight departs, or the flight is time-out delayed by TFMS-Core. The OETA is used to back out of a TMI. The OETA is different from the BETA in that it does NOT include any time-out delay modeled by TFMS-Core whereas the BETA does include time-out delay. Whenever the ETA is updated from an FS, FC, FM, or FZ, as long as the flight is not controlled or active, the OETA is updated to the ETA.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BETD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>BETD is used to save the ETD at the time a TMI is issued or the flight departs. The BETD is used to compute the amount of departure delay that can be attributed to a TMI. The BETD includes any time-out delay modeled by TFMS-Core. BETD is set in the following manner: 1) Whenever an ETD is updated from an FS, FC, FM, or FZ, as long as the flight is not controlled or active, the BETD is set to the new ETD; 2) Whenever CDM re-models a departure time due to a "time-out" delay, the BETD is updated to the new ETD.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="BETA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>BETA is set in the following manner: 1) Whenever the ETA is updated from an FS, FC, FM, or FZ, as long as the flight is not controlled or active, the BETA is updated to the ETA; 2) Whenever CDM re-models a departure time due to a time-out delay, the BETA is updated to the new ETA.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MSTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>TBFM issued scheduled time of departure</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SSOT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>STDDS surface movement Spot OUT Time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SSIT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>STDDS surface movement Spot IN Time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SOFT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>STDDS surface movement OFF Time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SONT" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>STDDS surface movement ON Time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OCTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Original Control Time of Departure preserves the first controlled departure time (CTD, a.k.a. EDCT), for the current CTL_ELEM, for a flight. Set on the first EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="OCTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Original Control Time of Arrival preserves the first controlled arrival time, for the current CTL_ELEM, for a flight. Set on the first EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTD" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Control Time of Departure is the current controlled departure time (CTD, a.k.a. EDCT), for the current CTL_ELEM, for a flight. Set on the every EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTA" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Control Time of Arrival is the current controlled arrival time, for the current CTL_ELEM, for a flight. Set on every EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TIME_OUT_DELAY" type="xsd:positiveInteger" minOccurs="0"/>
+      <xsd:element name="PREV_ACID" type="nxce:aircraftIdType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Control Time of Arrival is the current controlled arrival time, for the current CTL_ELEM, for a flight. Set on every EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="DVSTATUS" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the flight's diversion status: DIVERTED_G (ground), DIVERTED_A (airborne), or DIVERSION_CANCELED.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DIVERSION_G"/>
+            <xsd:enumeration value="DIVERSION_A"/>
+            <xsd:enumeration value="DIVERSION_CANCELED"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CTL_ELEMENT" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the airport (for a GDP), FCA (for an AFP or CTOP) currently controlling the times for a flight.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="3"/>
+            <xsd:maxLength value="6"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CTL_PROGRAM" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The name of the TMI currently controlling the times for a flight, either: the name of the airport for a GDP, the name of the FCA for an AFP or the CTOP_SHORT_NAME for a CTOP.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="3"/>
+            <xsd:maxLength value="6"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CTL_TYPE" minOccurs="0" type="controlTypeType">
+        <xsd:annotation>
+          <xsd:documentation>If a flight is controlled (i.e., has a CTD and CTA), CTL_TYPE indicates the specific source of the current CTD/CTA. The possible sources along with an indication of what program type they are applicable to: -ABRG - control times were assigned when the flight was utilized to create a bridge for Adaptive Compression performed automatically by the TFMS-Core (AFP and GDP); -ADPT - control time assigned when the flight was adaptively compressed by the TFMS-Core (AFP and GDP; -AFP - control times were assigned as part of an AFP-Initial or AFP-Revision (AFP); -BLKT - control times were assigned as part of a GDP Blanket (+/-) (GDP); -COMP - control times were assigned as part of a AFP-Compression or GDP-Compression (AFP and GDP); -CTOP - control times were assigned as part of a CTOP program;-DAS - control time which resulted from the assignment of the average delay to a pop-up flight which did not receive an unassigned slot in an AFP or GDP. For DAS based programs this is used for the initial delay assignments to all pop-up flights. For GAAP and UDP based program, this control type is used only if no unassigned slot is available for the pop-up. This control type is not used for re-controlled flights. (AFP and GDP) -ECR - control time assigned by a slot credit substitution message submitted by an Authorized FAA user (AFP and GDP) -GAAP - control times are the result of a GAAP or UDP based AFP or GDP if a pop-up or a re-control flight is allocated to an unassigned slot. This occurs for all pop-up flights in a GAAP or UDP based program when an unassigned slot is available for the flight. However, only some classes of re-controlled flights in a GAAP or UDP are assigned to unassigned slots. (e.g., those that occur after dropping out of an AFP). (AFP and GDP); -GDP - control times were assigned as part of an GDP-Initial or GDP-Revision (GDP); -GS - control times were assigned as part of a GDP-Ground Stop (GDP); -RCTL - control time which resulted from the assignment of the average delay to a flight that was at some point controlled by a GDP or AFP, which was then purged or the flight dropped out and was re-controlled in another AFP. For DAS programs this is used for the initial delay assignments to all re-controlled flights. For GAAP and UDP, this control type is used only if no unassigned slot is available for the re-controlled flight or the class of re-controlled flight is never assigned to unassigned slots. As opposed to other pop-ups, RCTL flights retain full substitution rights (AFP); -SBRG - control times were assigned when creating a bridge for an SCS or ECR request (AFP and GDP); -SCS - control times assigned by a slot credit substitution message submitted by a NAS User (AFP and GDP); -SUB - control times assigned by a conventional user substitution message (AFP and GDP); -UBRG - control times were assigned when creating a bridge for pop-up flight assignment during UDP. Performed automatically by the TFMS-Core (AFP and GDP); -UPD - control time or UX cancel status from an TFMS ?EDCT UPDATE command made by an Authorized FAA user (AFP and GDP).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTA_COMPLIANCE" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>CTA_COMPLIANCE (0x1) - For a GDP, indicates that a flight landed outside the CTA compliance window (more than 5 minutes earlier or 5 minutes later than the CTA). - For an AFP, indicates that the estimated entry time into the FCA was outside the CTA compliance window (more than 5 minutes earlier or 5 minutes later than the CTA).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTD_COMPLIANCE" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>CTD_COMPLIANCE (0x2) - For both a GDP and AFP, indicates that a flight took off outside the CTD compliance window (more than 5 minutes earlier or 5 minutes later than the CTD).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ETE_COMPLIANCE" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>ETE_VALUE (0x4) - For a GDP, indicates the difference between the actual enroute time (ORIG to DEST) and the controlled enroute time (ORIG to DEST) is outside the compliance time range (more than 15 minutes). - For an AFP, indicates that the estimated flying time from the origin airport to the FCA entry point was outside the compliance time range (more than 15 minutes).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CANCELLED_BUT_FLEW" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>CANCELLED_FLEW (0x10) - For both a GDP and AFP, indicates a flight that had a status of cancelled at the time that it was activated by a DZ, UZ, TZ, or AZ message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SPURIOUS_FLT" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>For both a GDP and AFP, if true, indicates that a flight was not scheduled (that is, was created on that day from a CDM message or flight plan), was controlled in a TMI and was cancelled by a CDM message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CDM_MBR" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>if true indicates whether this flight belongs to a CDM Participant and is thus eligible for the full benefits of compression.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="MAJOR" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the organization within which this flight is considered when RBS++ is computed (that is, all flights with the same MAJOR value are considered together during the intra-airline swapping portion of RBS++ and Compression). The MAJOR code can indicate an actual air carrier, a general aviation fleet operator, or a pseudo carrier used to logically group certain flights. If the MAJOR code is three letters, it is an official three-letter code that can be used for flight plan filing. If the MAJOR starts with a period character (.), it is a dummy code used only within TFMS. Dummy codes are used for any organization, such as a GA data provider, that is a CDM Participant but does not have an official three-letter code. If the flight IDs are being filtered, the MAJOR field contains the filtered four-letter code, and the '.' is not indicated.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="GDC" type="xsd:positiveInteger" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Provides the great circle distance, in nautical miles, between the origin and the destination airports.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fltTraversals" type="nxce:flightTraversalDataType2" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Comma delimited lists of fixes, waypoints, center, and sectors the flight traverses.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the RVSM conformance capability/status for the indicated flight in the FXA.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="remarksKeywords" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>This element contains a comma delimited list of Keywords found in field 11: NRP, LIFEGUARD, CATIII, ALTRV, SWAP, DVRSN, DIVERT, ADCUS, FCA, WXRTE, HAR, PTP.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="400"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="lastAmendmentStatus" type="lastRouteAmendmentType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Details of the flights last ERAM amendment request.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="tmiFlightInfoList" type="tmiFlightInfoType" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>List of flights.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="tmiFlightInfoType">
+    <xsd:sequence>
+      <xsd:element name="tmi">
+        <xsd:annotation>
+          <xsd:documentation>Provides all of the TMI identity parameters.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="tmiReferenceType">
+              <xsd:attribute name="updateType">
+                <xsd:annotation>
+                  <xsd:documentation>Defines if the flight is a New/Popup, dropout, or update relative to this TMI.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                  <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="NEW"/>
+                    <xsd:enumeration value="UPDATE"/>
+                    <xsd:enumeration value="DROPOUT"/>
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="ctopFlightData" type="ctopFltDataType">
+          <xsd:annotation>
+            <xsd:documentation>CTOP FEA/FCA flight data.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="rerouteFlightData" type="rrFltDataType">
+          <xsd:annotation>
+            <xsd:documentation>Reroute related flight data.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="fxaFlightData" type="fxaFlightListType">
+          <xsd:annotation>
+            <xsd:documentation>FEA/FCA flight list.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="flowProgramFlightData" type="flowFltDataType">
+          <xsd:annotation>
+            <xsd:documentation>AFP/GDP/GS flight list.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fxaFlightListType">
+    <xsd:sequence>
+      <xsd:element name="fxaFlight" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="fxaId" type="fcm:fcaIdentType">
+              <xsd:annotation>
+                <xsd:documentation>FXA Reference number.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="bentryTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Predicted entry time into FXA.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="createTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Create Time or time the flight was first detected intersecting the FEA/FCA..</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="eentryTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Estimated Earliest Entry Time i.e. Computed earliest possible entry time into the FEA/FCA..</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="entryTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Entry time from the trajectory modeled; a flight's estimated entry time for an FEA/FCA.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="exitTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Exit time from the trajectory modeled ; a flight's estimated exit time for an FEA/FCA.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="extendedExitTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>The exit time for this flight when using the extended end time of the FXA.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ientryTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Initial Entry Time.  Used by FSM to determine slot priorities.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="oentryTm" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Predicted Entry Time minus time out delay.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="entryLat" type="xsd:double">
+              <xsd:annotation>
+                <xsd:documentation>The flight's latitudinal position at entry into this FXA, in degrees.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="entryLon" type="xsd:double">
+              <xsd:annotation>
+                <xsd:documentation>The flight's longitudinal position at entry into this FXA, in degrees.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="entryHeading" type="xsd:integer">
+              <xsd:annotation>
+                <xsd:documentation>The heading of the aircraft at entry point, in degrees.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="exitInd" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Indicates that a flight is an exit flight, no longer intersecting the FXA.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Yes"/>
+                  <xsd:enumeration value="No"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="rrFltDataType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the flight and associated Reroute unique data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="conformanceStatus" type="conformanceStatusType">
+        <xsd:annotation>
+          <xsd:documentation>The flights overall Reroute Conformance status.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="centerConformanceList" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="centerConformance" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>Conformance status per center traversed.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="center" type="fce:centerIdType">
+                    <xsd:annotation>
+                      <xsd:documentation>Name of the center.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="conformant" type="xsd:boolean">
+                    <xsd:annotation>
+                      <xsd:documentation>True if the flight is Conformant within the bounds of the center.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="canMove" type="xsd:boolean">
+                    <xsd:annotation>
+                      <xsd:documentation>True if the center can amend the flight to improve its overall reroute conformance status.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="assignedRouteContainer" maxOccurs="unbounded" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Reroute unique data associated with the flight.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="fcm:routeContainerType">
+              <xsd:attribute name="preferred" type="xsd:boolean"/>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="rerouteMessageType">
+    <xsd:annotation>
+      <xsd:documentation>Reroute message data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="rerouteGeneralData" type="fcm:rerouteGeneralDataType">
+        <xsd:annotation>
+          <xsd:documentation>Reroute general data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rerouteRouteData">
+        <xsd:annotation>
+          <xsd:documentation>Reroute route data.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="rerouteSegmentData" type="fcm:segmentDataType" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>The route segments.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="rerouteFlightList" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The reroute flight list.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="lastUpdated" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>The time last updated.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="flightContainer" type="fcm:flightContainerType" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>The flight data.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="rerouteAdvisoryList" type="fcm:rerouteAdvisoryListType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The reroute advisory list.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rerouteMitRestrictionList" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The List of all the data pertaining to all MIT restrictions</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="milesInTrailRestriction" type="fcm:milesInTrailRestrictionType" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="arrivalFixParamsType">
+    <xsd:choice>
+      <xsd:element name="all">
+        <xsd:annotation>
+          <xsd:documentation>Provides the ALL option.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ALL"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="fix" type="nxce:fixNameType" minOccurs="1" maxOccurs="4">
+        <xsd:annotation>
+          <xsd:documentation>Defines the arrival fixes.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="paramCommonParamType">
+    <xsd:annotation>
+      <xsd:documentation>This defines the common parameters for all of the AFP/GDP/GS/CTOP TMIs.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="tmiState" type="fce:advisoryStateType">
+        <xsd:annotation>
+          <xsd:documentation>Advisory program states: PROPOSED - The program is proposed and only has parameters, not slot; ACTUAL - The program is actually in effect; EXPIRED - The program's last controlled flight has landed and it's expired; or PURGED - The program was purged. Actual or proposed are only valid when creating or updating a program. PURGED is only valid when canceling a program. EPIRED is used by TFMS that the program has expired.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="parametersType" type="fadtParmType"/>
+      <xsd:element name="elemName" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the constrained NAS element such an airport for which a ground delay program or ground stop was run or a Flow Control Area (FCA) for an Air Flow Program.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="elemType" type="fce:elementTypeType">
+        <xsd:annotation>
+          <xsd:documentation>Indicates if the element name is an airport or an FCA.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ctlProgram">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the Controlling Program. For an AFP it is an FCA identifier (FCAddd),  a CTOP is the CTOP identifier (CTPddd), and for GDP or GS it is the airport name for which the TMI was issued.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:minLength value="3"/>
+            <xsd:maxLength value="6"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="dataTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines data time used for modeling a program. For operational programs the data time is always the same as the model time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="modelTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Identifies the time the data used for modeling was frozen for purposes of modeling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="reportTimeFull" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines date and time that the TMI is issued.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eventStartTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the start time of the traffic management initiative.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eventEndTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the end time of the traffic management initiative.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cumulativeStartTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the earliest of the eventStartTime that the TMI was issued. The cumulative start time is updated based on the following rules: AFP/CTOP/GDP-Revisions - The cumulative start time is updated to the event start time if the new event start time is earlier than the prior cumulative start time. If the new event start time is later than the cumulative start time, the cumulative start time remains unchanged; AFP/GDP-Revisions with Purge Flights before Revision Start Time Selected - The cumulative start time is updated to the event start time, which results in a later cumulative start time; AFP/GDP-Compressions - Compression events never alter the cumulative start time even though the start of the compression may be later than the cumulative start time. The start of the compression is never earlier than the cumulative start time; GDP-Blankets - Blanket events never alter the cumulative start time even though the start of the blanket may be later than the cumulative start time. The start of the blanket is never earlier than the cumulative start time; GDP-Ground Stop without a concurrent GDP - The cumulative start time is always the same as the GS event start time; GDP-Ground Stop with a concurrent GDP - The cumulative start time is the cumulative start of the GDP and is never altered by the GS event start time even though the start of the ground stop may be earlier or later than the cumulative start time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cumulativeEndTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>The cumulative end time is updated based on the following rules: AFP/CTOP/GDP-Revisions - The cumulative end time is updated to the event end time if the new event end time is later than the prior cumulative end time. If the new event end time is earlier then the cumulative end time, the cumulative end time remains unchanged; AFP/GDP-Revisions with Purge Flights after Revision End Time Selected - The cumulative end time is updated to the event end time which results in an earlier cumulative end time; AFP/GDP-Compressions - Compression events never alter the cumulative end time even though the end of the compression may be earlier or later than the cumulative end time; GDP-Blankets - Blanket events never alter the cumulative end time even though the end of the blanket may be earlier or later than the cumulative end time; GDP-Ground Stop without a concurrent GDP - The cumulative end time is always the same as the GS event end time; GDP-Ground Stop with a concurrent GDP - The cumulative end time is the cumulative end of the GDP and is never altered by the GS event end time even though the end of the ground stop may be earlier or later than the cumulative end time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="chargeTo">
+        <xsd:annotation>
+          <xsd:documentation>Defines the end time of the traffic management initiative.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="facilityType">
+              <xsd:annotation>
+                <xsd:documentation>Provides the facility type: Airport, Terminal, or Center.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="Airport"/>
+                  <xsd:enumeration value="Terminal"/>
+                  <xsd:enumeration value="Center"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="facilityName" type="nxce:facilityIdentifierType">
+              <xsd:annotation>
+                <xsd:documentation>Provides the facility name.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="chargeToNonFAA">
+        <xsd:annotation>
+          <xsd:documentation>Indicates if this TMI should be charged to the FAA i.e. It was NAS requested.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Y"/>
+            <xsd:enumeration value="N"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="impactingConditionCode" type="fce:impactingConditionCodeType">
+        <xsd:annotation>
+          <xsd:documentation>Impacting Condition OPSNET Code dddd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="impactingConditionEquipment" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="FAA" type="xsd:boolean"/>
+            <xsd:element name="scheduled" type="xsd:boolean"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="totalFlights" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Total flights captured by the TMI defined by the parameters.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="affectedFlights" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Total flights affected by the TMI defined by the parameters.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="totalDelayBefore" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Total delay before TMI modeling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="totalDelayAfter" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Total predicted delay with TMI.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="maxDelayBefore" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Maximum delay before TMI modeling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="maxDelayAfter" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Minimum predicted delay with TMI.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="minDelayBefore" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Minimum delay before TMI modeling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="minDelayAfter" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Minimum predicted delay with TMI.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="averageDelayBefore">
+        <xsd:annotation>
+          <xsd:documentation>Average delay before TMI modeling.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0.0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="averageDelayAfter">
+        <xsd:annotation>
+          <xsd:documentation>Average predicted delay with TMI.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0.0"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="paramBlanketType">
+    <xsd:annotation>
+      <xsd:documentation>Provides the full definition of a GDP Blanket that may be used to create or update a GDP Blanket program and also publish the full GDP Blanket parameter set.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="paramCommonParamType">
+        <xsd:sequence>
+          <xsd:element name="aircraftType">
+            <xsd:annotation>
+              <xsd:documentation>Defines the aircraft type affected by the TMI. It allows for the following values: ALL, Jet_Only, or Prop_Only. If Prop_Only is specified, it is assumed that both piston and turbo props are included.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="ALL"/>
+                <xsd:enumeration value="Jet_Only"/>
+                <xsd:enumeration value="Prop_Only"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="arrivalFix" type="arrivalFixParamsType">
+            <xsd:annotation>
+              <xsd:documentation>Arrival Fix defines exclusions (flights that receive no control time) from program or DAS delay. </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="carrierName">
+            <xsd:annotation>
+              <xsd:documentation>Carrier Name defines exclusions (flights that receive no control time) from program or DAS delay.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:choice>
+                <xsd:element name="all">
+                  <xsd:annotation>
+                    <xsd:documentation>Provides the ALL option.</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="ALL"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="name" type="nxce:airlineIdType">
+                  <xsd:annotation>
+                    <xsd:documentation>identifies the major carrier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nowPlus" type="xsd:nonNegativeInteger" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>The value indicates the number of minutes from the dataTime that flights are exempt when the depExemptType is By_Time.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="exemptType">
+            <xsd:annotation>
+              <xsd:documentation>Specifies if the program defined by the parameters was based on Tier-based criteria or Distance-based criteria.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="By_Tiers"/>
+                <xsd:enumeration value="By_Distance"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="exemptDistance" type="xsd:positiveInteger" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies an integer distance, in nautical miles, beyond which departing flights are exempt from program and DAS delay.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="airportIfDistance" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Any valid TFMS-Core airport may be used. A 'departure airport only if within distance' non-exemption shall have precedence over a center exemption, but not over a distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" minOccurs="1" maxOccurs="16" type="nxce:airportIdType">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptCenterOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies complete centers from within which originating (departing) flights are exempt from DAS delays. A center exemption has precedence over a distance exemption, but not over an airport exemption. </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="center" type="nxce:facilityIdentifierType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptFlight" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any specific ACIDs entered by the FSM users that are exempt from program delay. A maximum of twenty four flights may be specified and are listed as multiple space-separated values on a single line..</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="flight" type="nxce:aircraftIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptCenterOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any complete centers within which departing flights are  not exempt from DAS delays. A center non-exemption has precedence over a distance exemption, but not over an airport exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="center" type="nxce:facilityIdentifierType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights specifically are not exempt from DAS delays. An airport non-exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="16">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="adjustMinute" type="xsd:integer">
+            <xsd:annotation>
+              <xsd:documentation>Blanket Adjustment the number of minutes that are added or subtracted from the currently delay. The value may be positive or negative.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="paramCompressionType">
+    <xsd:annotation>
+      <xsd:documentation>Provides the full definition of a Compression that may be used to create or update a Compression program and also publish the full Compression parameter set.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="paramCommonParamType">
+        <xsd:sequence>
+          <xsd:element name="compressLastCta" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation>Indicates that the "Compress to Last CTA" option was selected by the user when issuing this compression.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="compressionType">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the specific Compression type applied to the TMI.  This only applies to the Compression of GDP and AFP programs. FLIGHTS - Indicates a compression event which modifies both flights and unassigned slots (if the program being compressed has a delay mode of GAAP or UDP). This type of compression event can be used when the delay mode is DAS, GAAP, or UDP. SLOTS - Indicates a compression event which only modifies unassigned slots. This type of compression event can only be used when the delay mode is GAAP or UDP.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="FLIGHTS"/>
+                <xsd:enumeration value="SLOTS"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="overrideCarrier" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the specific carriers whose slot holds the user has selected to override.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="carrier" type="nxce:airlineIdType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the carrier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="paramAfpGdpType">
+    <xsd:annotation>
+      <xsd:documentation>Provides the full definition of a AFP/GDP that may be used to create or update a AFP/GDP program and also publish the full AFP/GDP parameter set.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="paramCommonParamType">
+        <xsd:sequence>
+          <xsd:element name="lastGDPEndTime">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the end time of the last issuance of a GDP/AFP for that element. the Value is either a data time or NA. NA is indicated when the parameters define an initial AFP/GDP.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:choice>
+                <xsd:element name="na">
+                  <xsd:annotation>
+                    <xsd:documentation>The NA value.</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="NA"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="time" type="xsd:dateTime">
+                  <xsd:annotation>
+                    <xsd:documentation>the date and time value.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="purgeBeforeRevision" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation>Purge Flight between cumulative time start and program start if cumulative time start is before program start.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="purgeAfterRevision" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation>Purge Flight between program end time and cumulative end time if program end time is before cumulative end time.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="compressLastCta" type="xsd:boolean">
+            <xsd:annotation>
+              <xsd:documentation>Indicates that the Compress to Last CTA option was selected by the user when issuing this compression.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="aircraftType">
+            <xsd:annotation>
+              <xsd:documentation>Defines the aircraft type affected by the TMI. It allows for the following values: ALL, Jet_Only, or Prop_Only. If Prop_Only is specified, it is assumed that both piston and turbo props are included.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="ALL"/>
+                <xsd:enumeration value="Jet_Only"/>
+                <xsd:enumeration value="Prop_Only"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="arrivalFix" type="arrivalFixParamsType">
+            <xsd:annotation>
+              <xsd:documentation>Arrival Fix defines exclusions (flights that receive no control time) from program or DAS delay. </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="carrierName">
+            <xsd:annotation>
+              <xsd:documentation>Carrier Name defines exclusions (flights that receive no control time) from program or DAS delay.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:choice>
+                <xsd:element name="all">
+                  <xsd:annotation>
+                    <xsd:documentation>Provides the ALL option.</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="ALL"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="name" type="nxce:airlineIdType">
+                  <xsd:annotation>
+                    <xsd:documentation>identifies the major carrier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nowPlus" type="xsd:nonNegativeInteger" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>The value indicates the number of minutes from the dataTime that flights are exempt when the depExemptType is "By_Time".</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="ratesType" minOccurs="1">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="ARRIVAL"/>
+                <xsd:enumeration value="DEPARTURE"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="programRates">
+            <xsd:annotation>
+              <xsd:documentation>Provides the program flights rates per 15 minutes interval from the specified start time. The rates include the modeled, reserved, and historical pop-up.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="startTime" type="xsd:dateTime">
+                  <xsd:annotation>
+                    <xsd:documentation>StartTime of the rate sequence.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="rates" minOccurs="148" maxOccurs="148">
+                  <xsd:annotation>
+                    <xsd:documentation>StartTime of the rate sequence.</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element name="programRate" type="xsd:nonNegativeInteger">
+                        <xsd:annotation>
+                          <xsd:documentation>The modeled number of flights per 15 minute interval.</xsd:documentation>
+                        </xsd:annotation>
+                      </xsd:element>
+                      <xsd:element name="popupFactor" type="xsd:nonNegativeInteger" minOccurs="0">
+                        <xsd:annotation>
+                          <xsd:documentation>The historical pop-up number of flights per 15 minute interval.</xsd:documentation>
+                        </xsd:annotation>
+                      </xsd:element>
+                      <xsd:element name="reservedRate" minOccurs="0">
+                        <xsd:annotation>
+                          <xsd:documentation>The reserved number of flights per 15 minute interval.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                          <xsd:restriction base="xsd:decimal">
+                            <xsd:fractionDigits value="1"/>
+                            <xsd:minInclusive value="0.0"/>
+                          </xsd:restriction>
+                        </xsd:simpleType>
+                      </xsd:element>
+                    </xsd:sequence>
+                    <xsd:attribute name="seq" type="xsd:positiveInteger" use="required">
+                      <xsd:annotation>
+                        <xsd:documentation>The sequence number.</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:attribute>
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptType">
+            <xsd:annotation>
+              <xsd:documentation>Specifies if the program defined by the parameters was based on Tier-based criteria or Distance-based criteria.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="By_Tiers"/>
+                <xsd:enumeration value="By_Distance"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="exemptDistance" type="xsd:positiveInteger" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies an integer distance, in nautical miles, beyond which departing flights are exempt from program and DAS delay.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="airportIfDistance" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Any valid TFMS-Core airport may be used. A 'departure airport only if within distance' non-exemption shall have precedence over a center exemption, but not over a distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" minOccurs="1" maxOccurs="16" type="nxce:airportIdType">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptCenterOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies complete centers from within which originating (departing) flights are exempt from DAS delays. A center exemption has precedence over a distance exemption, but not over an airport exemption. </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="center" type="nxce:facilityIdentifierType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptAirportDest" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports to which destination (arrival) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption. </xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptFlight" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any specific ACIDs entered by the FSM users that are exempt from program delay. A maximum of twenty four flights may be specified and are listed as multiple space-separated values on a single line..</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="flight" type="nxce:aircraftIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptCenterOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any complete centers within which departing flights are  not exempt from DAS delays. A center non-exemption has precedence over a distance exemption, but not over an airport exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="center" type="nxce:facilityIdentifierType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights specifically are not exempt from DAS delays. An airport non-exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="16">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptAirportDest" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports to which destination (arrival) flights specifically are not exempt from DAS delays. An airport non-exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="16">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt destination airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="delayCeiling">
+            <xsd:annotation>
+              <xsd:documentation>The Delay Ceiling (max delay) that is issued as specified by the user. A value of 999 indicates that the delay ceiling is unrestricted. DEPRECATED KEYWORD.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minExclusive value="0"/>
+                <xsd:maxInclusive value="999"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="operationType">
+            <xsd:annotation>
+              <xsd:documentation>Indicated the specific algorithm type applied to the TMI: RBS++ or RBS.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="RBS++"/>
+                <xsd:enumeration value="RBS"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="delayMode">
+            <xsd:annotation>
+              <xsd:documentation>Defines the delay assignment algorithm which should be used by the TFMS-Core for processing pop-up flights. The only valid values are DAS, GAAP, and UDP.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="DAS"/>
+                <xsd:enumeration value="GAAP"/>
+                <xsd:enumeration value="UDP"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="delayLimit" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Required when the delayMode is GAAP, UDP or CTOP. It shall not be listed for any other program type.  The keyword defines the maximum number of additional minutes of delay that can be added to Pop-Up flights during GAAP or UDP GDPs, or CTOPs.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:nonNegativeInteger">
+                <xsd:maxInclusive value="999"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="delayMultiplier" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the delay multiplier which is applied to the average delay to get the target delay for UDP based TMIs. This is an optional keyword required when the DELAY_MODE is UDP or GAAP. It shall not be listed for any other program type.  The value is a number from 1.0 to 9.9 in the format of N.N, negative values are not allowed. When listed for a DELAY_MODE of GAAP the multiplier is always 1.0.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:minInclusive value="1.0"/>
+                <xsd:maxInclusive value="9.9"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="earliestSlot" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the number of minutes added to the Event Start Time to determine the earliest point in time that any reserved slots are created.  The value is a number from 0 to 999 in the format of ddd. Only listed if the delay mode is UDP.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minInclusive value="0"/>
+                <xsd:maxInclusive value="999"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="overrideCarrier" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the specific carriers whose slot holds the user has selected to override.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="carrier" type="nxce:airlineIdType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the carrier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="overrideAFP" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates whether this is an override AFP that assumes control of flights from other AFPs. This line is used by TFMS to establish AFP priority for pop-up and re-control flights.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="Y"/>
+                <xsd:enumeration value="N"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="exemptAFP" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates that flights belonging to the listed AFPs from being shifted to GDP control and are therefore exempt from additional delay within a GDP. For example if FCAA01 is indicated any flight controlled by that AFP which is being shifted to a GDP is exempt.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="afpName" type="fce:fcaNameType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the AFP element.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptCTOP" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Indicates that flights belonging to the listed CTOPs from being shifted to GDP control and are therefore exempt from additional delay within a GDP. For example if CTP001 is indicated any flight controlled by that CTOP which is being shifted to a GDP is exempt.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="ctopShortName" type="ctopTmiShortNameType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the CTOP.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="setAAR">
+            <xsd:annotation>
+              <xsd:documentation>This indicator is only provided for AFP/GDP events since BKT, COMP, and GS have no associated PR, thus the AAR is always retained for those events. A value of PR indicates that the AAR was set by the modeling user. A value of TFMS indicates that the AAR values were either obtained from a legacy directly or indirectly from TFMS data.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="PR"/>
+                <xsd:enumeration value="ADL"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="depExemptionType">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the departure exemption type that is applied to all flights. Departure Exemption Type Indicator are: By_Status or By_Time</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="By_Status"/>
+                <xsd:enumeration value="By_Time"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="stackValue">
+            <xsd:annotation>
+              <xsd:documentation>Total flights pushed into the stack (pushed past the program end time) by the TMI as defined by its parameters.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minInclusive value="0"/>
+                <xsd:maxInclusive value="9999"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="paramGsType">
+    <xsd:annotation>
+      <xsd:documentation>Provides the full definition of a GDP that may be used to create or update a GDP program and also publish the full GDP parameter set</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="paramCommonParamType">
+        <xsd:sequence>
+          <xsd:element name="aircraftType">
+            <xsd:annotation>
+              <xsd:documentation>Defines the aircraft type affected by the TMI. It allows for the following values: ALL, Jet_Only, or Prop_Only. If Prop_Only is specified, it is assumed that both piston and turbo props are included.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="ALL"/>
+                <xsd:enumeration value="Jet_Only"/>
+                <xsd:enumeration value="Prop_Only"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="arrivalFix" type="arrivalFixParamsType">
+            <xsd:annotation>
+              <xsd:documentation>Arrival Fix defines exclusions (flights that receive no control time) from program or DAS delay. </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="carrierName">
+            <xsd:annotation>
+              <xsd:documentation>Carrier Name defines exclusions (flights that receive no control time) from program or DAS delay.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:choice>
+                <xsd:element name="all">
+                  <xsd:annotation>
+                    <xsd:documentation>Provides the ALL option.</xsd:documentation>
+                  </xsd:annotation>
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:enumeration value="ALL"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="name" type="nxce:airlineIdType">
+                  <xsd:annotation>
+                    <xsd:documentation>identifies the major carrier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nowPlus" type="xsd:nonNegativeInteger" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>The value indicates the number of minutes from the dataTime that flights are exempt when the depExemptType is "By_Time".</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="exemptType">
+            <xsd:annotation>
+              <xsd:documentation>Specifies if the program defined by the parameters was based on Tier-based criteria or Distance-based criteria.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="By_Tiers"/>
+                <xsd:enumeration value="By_Distance"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="exemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="exemptFlight" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any specific ACIDs entered by the FSM users that are exempt from program delay. A maximum of twenty four flights may be specified and are listed as multiple space-separated values on a single line..</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="flight" type="nxce:aircraftIdType" minOccurs="1" maxOccurs="24">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptCenterOrig" minOccurs="1">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any complete centers within which departing flights are  not exempt from DAS delays. A center non-exemption has precedence over a distance exemption, but not over an airport exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="center" type="nxce:facilityIdentifierType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt center.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="nonexemptAirportOrig" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Specifies any valid TFMS-Core airports from which originating (departing) flights specifically are not exempt from DAS delays. An airport non-exemption has precedence over a center or distance exemption.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="airport" type="nxce:airportIdType" minOccurs="1" maxOccurs="16">
+                  <xsd:annotation>
+                    <xsd:documentation>Identifies the non-exempt origin airport.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="depExemptionType">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the departure exemption type that is applied to all flights. Departure Exemption Type Indicator are: By_Status or By_Time</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="By_Status"/>
+                <xsd:enumeration value="By_Time"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="paramDeleteType">
+    <xsd:annotation>
+      <xsd:documentation>Defines fields necessary for a parameters delete request.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="elemName" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the constrained NAS element such an airport for which a ground delay program or ground stop was run or a Flow Control Area (FCA) for an Air Flow Program.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ctopFltDataType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the FEA/FCA specific data provided in the flight list.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element name="CTL_EXEMPT" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates if the flight was processed as exempt from the CTOP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_NAME" type="fcm:ctopNameType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The user-provided long form name of the controlling CTOP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_SHORTNAME" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The user-provided short form name of the controlling CTOP.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="CTP[0-9]{3}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CTOP_CONTROLLED_IND" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates if the flight is controlled by this CTOP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ROUTE_CONTROLLED_IND" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates if this CTOP is controlling the flights Route.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="TRAJECTORY_LIST">
+        <xsd:annotation>
+          <xsd:documentation>Container for the trajectory option list.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="TRAJECTORY" type="fcm:trajOptionType" maxOccurs="100">
+              <xsd:annotation>
+                <xsd:documentation>Container for a single trajectory option for this flight.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="REL_FLT_PRIORITY" type="fcm:relFltPriorityType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Relative priority of a flight compared to other flights for the same operator. The lower the number, the higher the priority.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="EXEMPT_REASON" type="ctopExemptReasonType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the reason a flight was exempt. Included only if CTL_EXEMPT is TRUE</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_ROUTE_OUT" type="xsd:boolean" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Indicates that the assigned trajectory option is routed out of the CTOP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_GROUND_DELAY" type="xsd:int" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>CTOP ground delay assigned due to flight (in minutes). NOTE: Delay value will still be present if given a delay in another CTOP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_ADDED_FLY_TIME" type="xsd:int" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Additional flying time due to the CTOP program (in minutes). NOTE: Delay value will still be present if given a delay in another CTOP</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="SLOT" type="fcm:fltSlotType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Assigned slot</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="LAST_ROUTE_AMENDMENT" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Provides the last route amendment.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="TMI_ID" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation>TMI ID associated with the route amendment.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ROUTE_AMENDMENT">
+              <xsd:annotation>
+                <xsd:documentation>Amended route text in the last amendment sent to ERAM for this flight.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1024"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="AMENDMENT_PROTECTED_SEGMENT" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Protected segment associated with the last amendment sent to ERAM for this flight.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1024"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="AMENDMENT_TIME" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Date/Time when the amendment was sent to ERAM.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="AMENDMENT_STATUS" type="amendmentStatusType">
+              <xsd:annotation>
+                <xsd:documentation>Status of the amendment.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="REJECT_REASON" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Text of the reason for the rejection. Included if the status is RJCT.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="256"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="REMARKS" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>A comma-separated list of remarks.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:list itemType="fcm:fcaRemarksType"/>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="REPORTED_ALT" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Reported altitude. 000 - 600, with optional suffix C,T,B.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CONFORMANCE_STATUS" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Provides the conformance status information.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="CONFORMANCE">
+              <xsd:annotation>
+                <xsd:documentation>Conformance status of selected flight</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="C"/>
+                  <xsd:enumeration value="NC"/>
+                  <xsd:enumeration value="UNKN"/>
+                  <xsd:enumeration value="EXC"/>
+                  <xsd:enumeration value="OK"/>
+                  <xsd:enumeration value="NC/OK"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="REASON" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Flag indicating conformance of current flights route, and altitude. Only required if flight is non-conformant. TRUE implies attribute is conformant. FALSE implies attribute is non-conformant.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:attribute name="routeConformant" type="xsd:boolean" use="required">
+                  <xsd:annotation>
+                    <xsd:documentation>if True conformant to route.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="speedConformant" type="xsd:boolean" use="required">
+                  <xsd:annotation>
+                    <xsd:documentation>if True conformant to speed.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="altitudeConformant" type="xsd:boolean" use="required">
+                  <xsd:annotation>
+                    <xsd:documentation>if True conformant to altitude.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="TOS_SEQ_NUM" minOccurs="0" type="fcm:tosSeqNbrType"/>
+    </xsd:all>
+  </xsd:complexType>
+  <xsd:simpleType name="uniqueFcaIdType">
+    <xsd:annotation>
+      <xsd:documentation>System-generated unique identifier of the FCA</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="64"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="tmiInfoType">
+    <xsd:annotation>
+      <xsd:documentation>Identifies a specific TMI.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="tmiReferenceNumber" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS TMI Reference number unique to TMI type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="tmiType" type="tmiTypeType">
+        <xsd:annotation>
+          <xsd:documentation>The TMI type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="tmiName" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS TMI Long Name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="tmiId" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS Identifier/Short Name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="lastUpdateTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Provides the time that the TMI definition was created or updated.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="tmiReferenceType">
+    <xsd:annotation>
+      <xsd:documentation>Provides the minimum required to identify a specific TMI.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="ctopId" type="fcm:ctopTmiIdType">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS CTOP unique system generated Id.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="fcaId" type="uniqueFcaIdType">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS FXA unique system generated Id.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rerouteId" type="fcm:rerouteIdType">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS Reroute unique system generated Id.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flowProgramId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>The TFMS unique flow program name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+    <xsd:attribute name="lastUpdateTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Provides the time that the TMI definition was created or updated.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="secondaryFilterDelType">
+    <xsd:annotation>
+      <xsd:documentation>Secondary filter deletion type definition.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="filterId" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Computer-generated text string that acts as the unique identification of the secondary filter.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="requestorIdType">
+    <xsd:annotation>
+      <xsd:documentation>Defines either a specific requestor type by providing a single facility and requestorId or can be used as a destination address for published  data where a value of ALL means GLOBAL distribution, a comma delimited list of facilities names means SHARED distribution, a single facility name with no requestorId means a LOCAL distribution.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="center" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Center/facility identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="requestorId" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>User identification.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="singleSlotType">
+    <xsd:annotation>
+      <xsd:documentation>Represents a slot or slot list with one single required flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="elementName" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Controlled element name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="elementType" type="fce:controlElementTypeType">
+        <xsd:annotation>
+          <xsd:documentation>Controlled element type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flight" type="controlledFlightType">
+        <xsd:annotation>
+          <xsd:documentation>Controlled flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="multipleSlotType">
+    <xsd:annotation>
+      <xsd:documentation>Represents a slot or slot list with zero or more flights.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="elementName" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Controlled element name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="elementType" type="fce:controlElementTypeType">
+        <xsd:annotation>
+          <xsd:documentation>Controlled element type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flight" type="controlledFlightType" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Controlled flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="listMultiSlotType">
+    <xsd:annotation>
+      <xsd:documentation>Represents a slot or slot list with zero or more flights.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="element" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="flight" type="controlledFlightType" minOccurs="0" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>Controlled flight.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="name" type="fce:controlElementNameType">
+            <xsd:annotation>
+              <xsd:documentation>Controlled element name.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="type" type="fce:controlElementTypeType">
+            <xsd:annotation>
+              <xsd:documentation>Controlled element type.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="edctOnOffNotificationMessageType">
+    <xsd:annotation>
+      <xsd:documentation>Used to notify carriers of ON/OFF changes to SUBs and SCSs</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="status" type="fce:onOffType">
+        <xsd:annotation>
+          <xsd:documentation>On/Off indicator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="elementName" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Control element name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fosFlowInfoOutputType">
+    <xsd:annotation>
+      <xsd:documentation> Messages sent to the FOS from TFMS along with additional information needed by the portal</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="TRAJ_ASSIGN_BROADCAST" type="fcm:ctopTrajAssignType">
+        <xsd:annotation>
+          <xsd:documentation>All clients receive this when a new trajectory assignment has been made for one or more flights (331)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="CTOP_FP_AMEND">
+        <xsd:annotation>
+          <xsd:documentation>Sent to FOS when a flight plan amendment request is accepted by ERAM for one of its flights (343)</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="UNIQUE_FLT_ID_DATA" type="nxce:qualifiedAircraftIdType">
+              <xsd:annotation>
+                <xsd:documentation>Container tag added for grouping aircraft identification data with a common type</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TOS_SEQ_NO" type="fcm:tosSeqNbrType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Unique sequence number used to correlate trajectory update messages with TOSs. This tag is omitted if no TOS has been submitted for this flight</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ROUTE" type="xsd:string" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Route of flight assigned by the CTYOP and used for the amendment</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CTOP_NAME" type="fcm:ctopNameType">
+              <xsd:annotation>
+                <xsd:documentation>CTOP name.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CTOP_SHORT_NAME" type="fcm:ctopTmiIdType">
+              <xsd:annotation>
+                <xsd:documentation>System-generated unique identifier for the CTOP.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="TOS_MESSAGE" type="fcm:tosType">
+        <xsd:annotation>
+          <xsd:documentation>The trajectory option set for a specific flight (320)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="airportNameType">
+    <xsd:annotation>
+      <xsd:documentation>Airport Name</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="3"/>
+      <xsd:maxLength value="7"/>
+      <xsd:pattern value="[a-zA-Z0-9]{3,7}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="dayTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Day and time in the format ddhhmm. dd - day hh - hour mm - minute</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|[1-2][0-9]|3[0-1])(([0-1][0-9]|2[0-3])[0-5][0-9])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="slotListElementType">
+    <xsd:annotation>
+      <xsd:documentation>Slot List that will get broken down inside TFMS. (Complete Format B6, B8)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="aircraftId" type="fcm:acidType">
+        <xsd:annotation>
+          <xsd:documentation>
+            Also known as flight identifier, call sign, this is the identity
+            under which the flight will operate. No leading zeros are shown in
+            the flight number.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="assignedArrivalSlot" type="slotNameType">
+          <xsd:annotation>
+            <xsd:documentation>
+              When a TMI is issued, each controlled flight is assigned an
+              arrival slot. The format consists of the following: Control
+              element name: 3 or 4 characters describing airport or FCA Slot
+              date and time: 6 digits: ddhhmm It is zero padded if necessary
+              (e.g., 06). 1-letter suffix: The suffix letter is used to ensure
+              that slot name is unique.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="specialSlot">
+          <xsd:annotation>
+            <xsd:documentation>A special case for b6SlotLists. ASLOT field may contain "PURGED" or "REMOVED" instead of a slot definition.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="REMOVED"/>
+              <xsd:enumeration value="PURGED"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:element name="departureAirport" type="airportNameType" minOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Origin airport identifier in 3 or 4 characters.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="arrivalAirport" type="airportNameType" minOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Destination airport identifier in 3 or 4 characters.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlledDepartureTime" type="dayTimeType" minOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            The time the flight should take off in ddhhmm format.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlledArrivalTime" type="dayTimeType" minOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            The time the flight should land in ddhhmm format.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlType">
+        <xsd:annotation>
+          <xsd:documentation>The source of the current control times for this flight
+                        (e.g. GDP).</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="GDP"/>
+            <xsd:enumeration value="AFP"/>
+            <xsd:enumeration value="GS"/>
+            <xsd:enumeration value="BLKT"/>
+            <xsd:enumeration value="COMP"/>
+            <xsd:enumeration value="DAS"/>
+            <xsd:enumeration value="GAAP"/>
+            <xsd:enumeration value="RCTL"/>
+            <xsd:enumeration value="SUB"/>
+            <xsd:enumeration value="SCS"/>
+            <xsd:enumeration value="ECR"/>
+            <xsd:enumeration value="UPD"/>
+            <xsd:enumeration value="ABRG"/>
+            <xsd:enumeration value="SBRG"/>
+            <xsd:enumeration value="UBRG"/>
+            <xsd:enumeration value="ADPT"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="exemptFlag" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates whether the flight was categorized as exempt (for
+            example, due to departure time status or departure center) when the
+            GDP-Initial, GDP-Revision, AFP-Initial, or AFP-Revision was
+            computed. One of two entries: Y (if true) ' ' (if false)
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cancelFlag" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>
+            Indicates whether the flight is currently cancelled. A flights CX
+            flag will be true if any Cancel Field (UX, FX, RZ, RS, TO, DV, or
+            RM) is true. One of two entries: Y (if true) ' ' (if false)
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="slotHoldFlag" type="xsd:boolean">
+        <xsd:annotation>
+          <xsd:documentation>
+            If a flight is controlled and cancelled (i.e., has a CTD, CTA, and
+            ASLOT), the Slot Hold flag indicates whether the slot associated
+            with this flight is being held, or would be held, by the NAS User
+            for the next compression. The compression algorithm will not
+            automatically fill slots that are held. If a flight is not
+            controlled the slot hold has no effect, although users may set the
+            slot hold in anticipation of a flight becoming controlled. A slot
+            hold may only be set for flights that are cancelled. One of two
+            entries: Y (if true) ' ' (if false)
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="earliestRunwayArrivalTimeOrEntryTime" type="dayTimeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+            ERTA or EENTRY  The earliest arrival time that the airline would like to have
+            assigned to this flight in a ground delay program. If the airline
+            has sent this field in a CDM FC or FM message, then the most recent
+            such time is contained in this field. Otherwise, the value will not appear.
+            Format is ddhhmm.(Only applies to GDP Slot List) or The earliest
+            possible entry time into the FEA or FCA, as calculated by TFMS. This
+            field is used to ensure that a flight will not be assigned a slot
+            for an FEA/FCA that it cannot use. Since the CDM Participants do not
+            send earliest entry times for an FEA/FCA, TFMS will compute this
+            value by first determining the earliest ETA (EETA), then applying
+            any delta to the ENTRY time. Format is ddhhmm.(Only applies to AFP
+            Slot List)
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="initialGateDepartureTime" type="dayTimeType" minOccurs="1">
+        <xsd:annotation>
+          <xsd:documentation>
+            Used to save the initial gate departure time of the flight. Useful
+            for flight data matching. Format is ddhhmm.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="slotNameType">
+    <xsd:annotation>
+      <xsd:documentation>Airport/FCA Name, Slot Time, Unique Letter.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="controlledElement" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Airport or FCA name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="slotTime" type="dayTimeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Time flight is expected.        </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="uniqueLetter" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Unique letter to assure no duplicate slot names.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fadtReqType">
+    <xsd:annotation>
+      <xsd:documentation>Fuel Flow Advisory Delay Time Message (FADT) for TFMS ingestion (no B8 B9 slot lists).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="controlElement" type="fce:controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>CTL_ELEM indicates the constrained NAS element such an airport for which a ground delay program or ground stop was run or a or a Flow Control Area (FCA) for an Air Flow Program.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="reportTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Time of last data snapshot prior to modeling.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="parameter" type="fadtParmType">
+        <xsd:annotation>
+          <xsd:documentation>Delay Program Type. One of: AFP, GDP, GS, BLKT, COMP</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="delayMode" type="fadtDelayModeType">
+        <xsd:annotation>
+          <xsd:documentation>The delay assignment algorithm which should be used for processing pop-up flights. (Note - If the keyword value is GAAP then a UNASSIGNED_SLOTS block is required to be included in the FADT)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="startTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the start date and time of the traffic management initiative contained in that FADT. The FADT can define a TMI in which the start time is later than the cumulative start time. For GDP-Ground Stops the START_TIME is based on flight ETAs, for all other TMIs it is based on the flights ETDs.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="endTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the end date and time of the traffic management initiative contained in that FADT. The FADT can define a TMI in which the end time is earlier or later than the cumulative end time. For GDP-Ground Stops the END_TIME is based on flight ETAs, for all other TMIs it is based on ETDs.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cumulativeStartTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the absolute start time of the combined traffic management initiatives that have been issued for this element (e.g., airport).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cumulativeEndTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Defines the absolute end time of the combined traffic management initiatives that have been issued for this element (e.g., airport).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="gdpParameterDelayLimit" type="xsd:integer" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Defines the number of minutes of delay that can be added to Pop=Up flights during GAAP GDPs.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="gdpParameterDelayMultiplier" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Defines the delay multiplier that can be added to Pop Up flights during UDP GDPs. The value shall be in the range of 1.0 to 9.9, negative values disallowed.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[1-9]\.[0-9]"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="overrideAFP" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The keyword defines whether this is an override AFP that assumes control of flights from other AFPs. Value is Y or N.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Y"/>
+            <xsd:enumeration value="N"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="unassignedSlotsBlock" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The UNASSIGNED_SLOTS block will be present only if the DELAY_MODE of GAAP is used. The block contains a list of unassigned slots that have not yet been allocated to flights.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="unassignedSlot" type="fce:slotNameType" minOccurs="0" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>Lists of unassigned slots.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="includeOnlyBlock" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The Include_Only block defines exclusions (flights that will receive no control time) from DAS delay processing. The Include_Only block is only applicable to GDPs for an airport and may not be utilized for AFPs. Exclusions take precedence over all exemptions or non-exemptions criteria.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="aircraftType" type="fce:tmiAircraftType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Valid types are âJETâ or âPROPâ. If âPROPâ is specified, ETMS will include both piston and turbo-props. Only one type may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="arrivalFixId" type="nxce:fixNameType" minOccurs="0" maxOccurs="4">
+              <xsd:annotation>
+                <xsd:documentation>Any defined arrival fix defined may be used. A maximum of four fixes may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="airlineId" type="nxce:airlineIdType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Any airline defined as a major carrier in the airline definitions file may be used. Any airline that is a subcarrier to that major will also be included.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="exemptionsBlock" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The Exemptions block defines exemptions (flight that will receive control times but no additional delay) from DAS delay processing.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="departingFlightDistance" type="xsd:integer" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Specifies an integer distance, in nautical miles, beyond which departing flights are exempt from DAS delays. Keyword: DISTANCE Followed by one nautical mile distance (up to 4 digits)</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="exemptCenter" type="nxce:airportIdType" minOccurs="0" maxOccurs="36">
+              <xsd:annotation>
+                <xsd:documentation>Specifies complete centers from within which departing flights are exempt from FA delays. A center exemption has precedence over a distance exemption. A maximum of 36 centers may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="exemptOriginatingAirport" type="nxce:airportIdType" minOccurs="0" maxOccurs="24">
+              <xsd:annotation>
+                <xsd:documentation>Specifies any valid airports from which originating (departing) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption. A maximum of 24 airports may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="exemptDestinationAirport" type="nxce:airportIdType" minOccurs="0" maxOccurs="24">
+              <xsd:annotation>
+                <xsd:documentation>Specifies any valid airports to which destination (arrival) flights are exempt from DAS delays. An airport exemption has precedence over a center or distance exemption. A maximum of 24 airports may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="nonExemptionsBlock" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The Non-Exemptions block defines exceptions to exemptions (flights that would be exempt based on the exemptions block but that the FSM user has specifically specified should not be exempt).</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="nonExemptOriginatingAirport" type="nxce:airportIdType" minOccurs="0" maxOccurs="16">
+              <xsd:annotation>
+                <xsd:documentation>Specifies any valid airports from which originating (departing) flights will specifically not be exempt from DAS delays. An airport non-exemption has precedence over a center or distance exemption. A maximum of 6 airports may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nonExemptDestinationAirport" type="nxce:airportIdType" minOccurs="0" maxOccurs="16">
+              <xsd:annotation>
+                <xsd:documentation>Specifies any valid airports from which destination (arriving) flights will specifically not be exempt from DAS delays. An airport non-exemption has
+                          precedence over a center or distance exemption. A maximum of 6 airports may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="nonExemptCenter" type="nxce:airportIdType" minOccurs="0" maxOccurs="16">
+              <xsd:annotation>
+                <xsd:documentation>Specifies any complete centers within which departing flights are exempt from DAS delays. A center non-exemption has precedence over a distance exemption, but not over an airport exemption. A maximum of 36 centers may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="airportWithinDistance" type="nxce:airportIdType" minOccurs="0" maxOccurs="16">
+              <xsd:annotation>
+                <xsd:documentation>Any valid airport may be used. A departure airport only if within distanceâ non-exemption shall have precedence over a center exemption, but not over a distance exemption. A maximum of 16 airports may be specified.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="dasDelayBlock" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The DAS block provides the average number of delay minutes for each 15 minute time period of the TMI. Instead of this block providing specific predefined keywords, the keyword is the date and time of the time bin to which that DAS delay applies. The time range of the DAS block will cover the time range from the later of the CUMLATIVE_START_TIME and model time quarter hour to the CUMLATIVE_END_TIME.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="delayTimeAmount" type="xsd:dateTime">
+              <xsd:annotation>
+                <xsd:documentation>Date and time â Specifies the start of the 15 minute time bin that the DAS delay value should be applied to. In all cases the time bins will be in chronological order and indicate 15 minute increments.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="dasDelay" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>DAS delay.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="delay" type="xsd:integer">
+                    <xsd:annotation>
+                      <xsd:documentation>Delay â Specifies the number of minutes of DAS delay for that time bin.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="seq" type="xsd:positiveInteger" use="required">
+                  <xsd:annotation>
+                    <xsd:documentation>The sequence number.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="slotList">
+        <xsd:annotation>
+          <xsd:documentation>Slot/Flight list.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="slot" type="slotListElementType" minOccurs="2" maxOccurs="unbounded">
+              <xsd:annotation>
+                <xsd:documentation>Flight unique data associated with this TMI.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="rerouteErrorType">
+    <xsd:annotation>
+      <xsd:documentation>
+      This simple type defines the enumerations of reroute error messages.
+   </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MERGE_ANGLE">
+        <xsd:annotation>
+          <xsd:documentation>
+        This enumerated value indicates a merge angle error.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="rerouteWarningType">
+    <xsd:annotation>
+      <xsd:documentation>
+      This simple type defines the enumerations of reroute warning messages.
+   </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MERGE_ANGLE">
+        <xsd:annotation>
+          <xsd:documentation>
+        This enumerated value indicates a merge angle warning.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AMD_FREQUENCY">
+        <xsd:annotation>
+          <xsd:documentation>
+        This enumated value indicates a violation of the cool-down period 
+        before sending another amendment request.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MODIFIED_FLT_DATA">
+        <xsd:annotation>
+          <xsd:documentation>
+        This enumated value indicates a warning the flight contains modified 
+        data that has not been displayed yet.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="amendmentStatusType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SENT">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment successfully
+                        sent to ERAM.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HELD">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment successfully
+                        held.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TOUT">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment timed out.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="PEND">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment is pending.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="APLD">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment was applied.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AMOD">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment was applied
+                        with modifications.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DROP">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment was dropped.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="RJCT">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment was rejected.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="amendmentGenerateType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="MANUAL">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment is a manual type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AUTO">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment is a auto type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AUTO_CHNG_RTE">
+        <xsd:annotation>
+          <xsd:documentation>This enumerated value indicates amendment is a auto type that is route changing.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="hhmmTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Specifies time as a string in hhmm format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="([0-1][0-9]|[2][0-3])[0-5][0-9]"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+      <xsd:complexType name="fxaSecondaryFilterType">
+    <xsd:annotation>
+      <xsd:documentation>Secondary filter type definition.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="fxaSecondaryFilterDefinitionType">
+        <xsd:annotation>
+          <xsd:documentation>Extends the primary filter type.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element name="filterId" type="fcaFilterIdType">
+            <xsd:annotation>
+              <xsd:documentation>Computer-generated text string that acts as the unique identification of the secondary filter.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="filterName" type="fcm:fcaNameType" minOccurs="1"/>
+          <xsd:element name="fcaId" type="fcm:fcaIdType">
+            <xsd:annotation>
+              <xsd:documentation>System generated unique FCA identifier</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="domain" type="nxce:tmiVisibilityDomainType">
+            <xsd:annotation>
+              <xsd:documentation>FCA visibility: Public or Shared.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="lastUpdate" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation>The time the FCA was last updated.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="lastUpdateWorkstationId" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Last workstation that updated FCA.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="lastUpdateSiteId" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Last site that updated the FCA.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="createWorkstationId" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Workstation that created the FCA.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="createSiteId" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation>Site that created the FCA.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="priority">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the priority of a filter (integer, or -1 if no priority is assigned. The value corresponds to the default order in which the filters are displayed and applied.</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:integer">
+                <xsd:minInclusive value="-1"/>
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element name="show" type="xsd:boolean" minOccurs="0">
+            <xsd:annotation>
+              <xsd:documentation>Flag indicating whether the filter should be shown by
+                        default.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="fxaSecondaryFilterDefinitionType">
+    <xsd:annotation>
+      <xsd:documentation>Defines FEA/FCA Filters.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="COLOR_ID" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Color index indicating the color that TFMS is using to draw the filter. 0 - 35. (NOTE: See Appendix A for a definition of the COLOR_ID values.)</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:int">
+            <xsd:maxInclusive value="35"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CONDITIONS">
+        <xsd:annotation>
+          <xsd:documentation>Conditions.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element name="ANY" type="fcm:secondaryAnyFcaFilterType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>ANY filter.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ALL" type="fcm:secondaryAllFcaFilterType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>ALL filter.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+    <xsd:simpleType name="fcaFilterIdType">
+    <xsd:annotation>
+      <xsd:documentation>System generated unique identifier of FEA/FCA secondary filter. Format is filter.{fcaId}.{sitename}.{hostname}.{yyyyMMddhhmmss}</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="filter\.fca\.[A-Za-z0-9]{1,8}\.\w{1,8}\.\d{14}\.[A-Za-z0-9]{1,8}\.\w{1,8}\.\d{14}"/>
+      <xsd:maxLength value="100"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="rerouteAmendmentResponseType">
+    <xsd:sequence>
+      <xsd:element name="rrAmendment" maxOccurs="25">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="flightIdfr" type="fce:idfrType"/>
+            <xsd:element name="acid" type="fcm:acidType"/>
+            <xsd:element name="gufi" type="fce:gufiType"/>
+            <xsd:element name="amendmentRequestType">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="UPDATE"/>
+                  <xsd:enumeration value="CANCEL"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="controllingSector" type="fce:elementNameType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>
+          The controlling sector is required only for active flights.
+      </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="flightAmendmentStatus" type="lastRouteAmendmentType" minOccurs="0"/>
+            <xsd:choice>
+              <xsd:element name="errorResponse" type="xsd:string" minOccurs="0"/>
+              <xsd:sequence minOccurs="0">
+                <xsd:element name="warningType" type="rerouteWarningType" maxOccurs="10"/>
+                <xsd:element name="warningMessage" minOccurs="1">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:maxLength value="256"/>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="lastRouteAmendmentType">
+    <xsd:sequence>
+      <xsd:element name="tmiId">
+        <xsd:annotation>
+          <xsd:documentation>
+      TMI ID associated with the route amendment.
+     </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="8"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="routeAmendment">
+        <xsd:annotation>
+          <xsd:documentation>
+      Amended route text in the last amendment sent to ERAM for this flight.
+     </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1024"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="amendmentProtectedSegment" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+      Protected segment associated with the last amendment sent to ERAM for this
+      flight.
+     </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1024"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="amendmentStatus" type="amendmentStatusType">
+        <xsd:annotation>
+          <xsd:documentation>
+      Status of the amendment.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="amendmentTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>
+      Date/Time when the amendment was sent to ERAM.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="amendmentStatusUpdTime" type="xsd:long">
+        <xsd:annotation>
+          <xsd:documentation>
+      Date/Time when the amendment was Last Updated.
+     </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="finalControllingSectorInCenter" type="fce:elementNameType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+                  The last controlling sector this flight is expected to 
+                  pass through in the current center.
+              </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eramStatus" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="35"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="detailOne" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="detailTwo" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="msgId" minOccurs="0">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="36"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="workstation" type="fce:workstationType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+                  The workstation this amendment was sent.
+              </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="site" type="fce:siteType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>
+                  The site this amendment was sent.
+              </xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="tmiIdSuffix">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+            <xsd:maxInclusive value="99"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="amendmentGeneratedType" minOccurs="0" type="amendmentGenerateType"/>
+    </xsd:sequence>
+    <xsd:attribute name="MAJOR_AIRLINE" type="nxce:airlineIdType"/>
+  </xsd:complexType>
+  <xsd:complexType name="tacticalRerouteType">
+    <xsd:annotation>
+      <xsd:documentation>Represents a Tactical Reroute</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="tacticalRerouteId" type="fcm:rriaIdType"/>
+      <xsd:element name="tmiId" type="fce:tmiIdType"/>
+      <xsd:element name="creationDate" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

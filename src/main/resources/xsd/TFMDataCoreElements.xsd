@@ -1,0 +1,1735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" 
+            version="2.0.5" 
+            elementFormDefault="qualified">
+  <xsd:complexType name="adaptedRoutNameType">
+    <xsd:annotation>
+      <xsd:documentation>Defines Adapted Route name and type of route.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="routeName" type="routeNameType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The name of the route.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="routeType" type="routeTypesType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Route type.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="airborneEquipmentQualifierType">
+    <xsd:annotation>
+      <xsd:documentation>Single letter which is referenced with local adaptation to be deciphered. This is NAS field 03e.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9]"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="aircraftEngineClassType">
+    <xsd:annotation>
+      <xsd:documentation>Aircraft Engine Class Type is used to describe an aircraft's power source.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PISTON">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft Engine Class Type of "PISTON" indicates the aircraft is powered by piston driven engine(s).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TURBO">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft Engine Class Type of "TURBO" indicates the aircraft is powered by Turbprop engine(s).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="JET">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft Engine Class Type of "JET" indicates the aircraft is powered by Jet engine(s).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="aircraftIdType">
+    <xsd:annotation>
+      <xsd:documentation>Aircraft Identification Type Valid Format: Laa(a)(a)(a)(a) or Ld or M. Call sign of a flight plan or if "M", aircraft identification missing. M cannot be used in this element for surveillance entries.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="M|[a-zA-Z][0-9]|[a-zA-Z][0-9a-zA-Z]{2,6}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="airlineIdType">
+    <xsd:annotation>
+      <xsd:documentation>Airline is 3 alphanumeric characters</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z0-9]{3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="airportIdType">
+    <xsd:annotation>
+      <xsd:documentation>An airport is 3 to 5 alphanumeric characters.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9]{3,5}[ ]{0,1}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="airwayNameType">
+    <xsd:annotation>
+      <xsd:documentation>Airway Name Type contains an airway identification having a valid format of 2-8 alphanumeric characters.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="routeNameType"/>
+  </xsd:simpleType>
+  <xsd:complexType name="altitudeFixAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Altitude fix Altitude Type contains an altitude having a valid format of (d)dd/fix/dd(d) where fix is a valid 2-12 character fix designation.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="fixType">
+        <xsd:attribute name="preFixAltitude" type="simpleAltitudeType" use="required">
+          <xsd:annotation>
+            <xsd:documentation> Pre fix altitude.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="postFixAltitude" type="simpleAltitudeType" use="required">
+          <xsd:annotation>
+            <xsd:documentation> Post fix altitude.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="assignedAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Assigned Altitude Type represents the altitude assigned to this flight by Air Traffic Control.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="simpleAltitude">
+        <xsd:annotation>
+          <xsd:documentation>Altitude for flight operating above or below a this altitude.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="simpleAltitudeType">
+              <xsd:attribute name="above" type="xsd:boolean">
+                <xsd:annotation>
+                  <xsd:documentation>Flight operating above a specified altitude.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="blockedAltitude" type="blockedAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Blocked altitude defined as a minimum and maximum altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="visualFlightRules" type="visualFlightRulesType">
+        <xsd:annotation>
+          <xsd:documentation>Visual flight rules.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altitudeFixAltitude" type="altitudeFixAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Fix altitude type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="beaconCodeType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type defining the constraints placed on valid beacon code values which are octal.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:nonNegativeInteger">
+      <xsd:maxInclusive value="9999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="blockedAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Blocked Altitude Type contains an altitude having a valid format of (M)(d)ddB(d)dd where the low altitude is entered first.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="min" type="simpleAltitudeType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Minimum altitude.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="max" type="simpleAltitudeType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Maximum altitude.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="computerSystemIdType">
+    <xsd:annotation>
+      <xsd:documentation>Valid Format: Must match one of the predefined values. The computerSystemIdType is used to predefine the identification of systems which the TFMS exchanges data with. It can be used with other information in more complex types to uniquely identify data. For example, an Id number along with a computerSystemIdType could be used to uniquely identify or differentiated between data across multiple systems. Refer to the flightComputerIdType for an example of how this element is used.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="TFMS">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the Traffic Flow Management System.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the Host Computer System (HCS).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CTAS">
+        <xsd:annotation>
+          <xsd:documentation>Indicates Center-TRACON Automation System.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TBFM">
+        <xsd:annotation>
+          <xsd:documentation>Indicates Time Based Flow Management system.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ETMS">
+        <xsd:annotation>
+          <xsd:documentation>Indicates Enhanced Traffic Management System.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ERAM">
+        <xsd:annotation>
+          <xsd:documentation>Indicates En Route Automation Modernization system.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="STDDS">
+        <xsd:annotation>
+          <xsd:documentation>Indicates SWIM Terminal Data Distribution System system.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ODAPS"/>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="controlIndicatorType">
+    <xsd:annotation>
+      <xsd:documentation>Enumerated type used to describe when flight control is active or canceled.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CONTROL_ACTIVE">
+        <xsd:annotation>
+          <xsd:documentation>Flight control active.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CONTROL_CANCELED">
+        <xsd:annotation>
+          <xsd:documentation>Flight control cancelled</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="coordinationTimeDescriptorType">
+    <xsd:annotation>
+      <xsd:documentation>Coordination time descriptor.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ESTIMATED"/>
+      <xsd:enumeration value="PROPOSED"/>
+      <xsd:enumeration value="ACTUAL"/>
+      <xsd:enumeration value="FLUSH"/>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="coordinationTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Coordination time type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:dateTime">
+        <xsd:attribute name="type" type="coordinationTimeDescriptorType" use="required">
+          <xsd:annotation>
+            <xsd:documentation>Type of coordination time.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="delayTime" type="xsd:integer">
+          <xsd:annotation>
+            <xsd:documentation>Delay time.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:simpleType name="diversionIndicatorType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type defining the diversion state of a flight: airborne_noctl, airborne_ctl, ground_noctl, ground_ctl, and no diversion .</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIRBORN_NOCTL"/>
+      <xsd:enumeration value="AIRBORN_CTL"/>
+      <xsd:enumeration value="GROUND_NOCTL"/>
+      <xsd:enumeration value="GROUND_CTL"/>
+      <xsd:enumeration value="NO_DIVERSION"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="etaTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Estimated arrival time type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTUAL"/>
+      <xsd:enumeration value="AIRLINE"/>
+      <xsd:enumeration value="CONTROLLED"/>
+      <xsd:enumeration value="ESTIMATED"/>
+      <xsd:enumeration value="PROPOSED"/>
+      <xsd:enumeration value="SCHEDULED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="etdTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Estimated departure time type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTUAL"/>
+      <xsd:enumeration value="AIRLINE"/>
+      <xsd:enumeration value="EARLY_INTENT"/>
+      <xsd:enumeration value="ESTIMATED"/>
+      <xsd:enumeration value="METERED"/>
+      <xsd:enumeration value="PROPOSED"/>
+      <xsd:enumeration value="REROUTE"/>
+      <xsd:enumeration value="SCHEDULED"/>
+      <xsd:enumeration value="TAXIED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="etaFlightTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Defines estimated arrival time of a flight giving the date, time, and the ETA type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="timeValue" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Full date and time.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="etaType" type="etaTimeType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Type of ETA.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="etdFlightTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Defines estimated departure time of a flight giving the date, time, and the ETD type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="timeValue" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Full date and time.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="etdType" type="etdTimeType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Type of ETD.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="delayDataType">
+    <xsd:annotation>
+      <xsd:documentation>Delay Data Type contains the Delay Data from field 10 in the format of "/D(d)d+dd where the first two digits(hours) must not exceed 21 and the last two digits(minutes) must not exceed 59.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:duration">
+      <xsd:maxExclusive value="PT22H"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="enRouteElementType">
+    <xsd:annotation>
+      <xsd:documentation>EnRoute Element Type indicates the type of enRoute element.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="0" maxOccurs="48">
+      <xsd:element name="fix">
+        <xsd:annotation>
+          <xsd:documentation>Fix definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="fixType">
+              <xsd:attribute name="delayDataType" type="xsd:duration">
+                <xsd:annotation>
+                  <xsd:documentation>Delay type attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="adaptedRoute">
+        <xsd:annotation>
+          <xsd:documentation>Adapted route.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="routeNameType">
+              <xsd:attribute name="loopReEntry1" type="loopReEntryType">
+                <xsd:annotation>
+                  <xsd:documentation>Loop ReEntry 1 attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="loopReEntry2" type="loopReEntryType">
+                <xsd:annotation>
+                  <xsd:documentation>Loop ReEntry 2 attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="facilityIdentifierType">
+    <xsd:annotation>
+      <xsd:documentation>Valid Format: LLL(L) "Name" of a NAS Facility.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z0-9]{3,4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="field10FormatType">
+    <xsd:annotation>
+      <xsd:documentation>Field 10 route format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType name="filedTrueAirspeedType">
+    <xsd:annotation>
+      <xsd:documentation>Filed true air speed.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="3700"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="fixEventType">
+    <xsd:annotation>
+      <xsd:documentation>Defines fix name and its associated arrival time.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="fixName" type="fixNameType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The name of the fix.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="arrTime" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Time of arrival.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="fixNameType">
+    <xsd:annotation>
+      <xsd:documentation>The sequence of alphanumeric characters, if adapted, identifies a geographic point. A four character fix name must include at least one letter. Example: PHX; TH; F4DOV Note: the restriction of a four character fix name must include at least one letter may be able to be lifted after modernization as the restriction may have been imposed to prevent confusing the data with other data of the same format such as time or a beacon code. This would not be a problem with well-formed tags with descriptive names. e.g. &lt;fix&gt;1100&lt;/fix&gt; cannot be confused with any time as modernization uses the xsd:dateTime and xsd:time formats nor could it be confused with &lt;beaconCode&gt;1100&lt;/beaconCode&gt;</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9A-Z]{1,20}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="fixRadialDistanceType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type for defining a geographical point by using an adapted fix, a radial (angle) of heading from true north (radial of 0 equals true north) and a distance along that heading to the point being described. This type extends the fixName type meaning the data between the opening and closing element tags will contain the fix name, while the radial and distance are defined by required attributes. Example: &lt;frd radial="36" distance="27"&gt;ACY&lt;/frd&gt; indicates a point defined by starting at the geographical location of fix ACY facing true north, rotating 36 degrees from true north moving a distance 27 nautical miles. Note: frd is a dummy element name which is of type fixRadialDistanceType.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="fixNameType">
+        <xsd:attribute name="radial" type="radialDegreesType" use="required">
+          <xsd:annotation>
+            <xsd:documentation>Radial or angle from true north providing the heading towards the point being described.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="distance" type="radialDistanceType" use="required">
+          <xsd:annotation>
+            <xsd:documentation>Distance from the named fix in the direction of heading given by the radial to the point being defined.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="fixType">
+    <xsd:annotation>
+      <xsd:documentation>Fix type can either be a named fix such as C3T or ACY, an adapted position given by latitude and longitude, or an adapted position given by the fix name, a radial heading from true north, and a distance along that heading.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="latLong" type="latlongType">
+        <xsd:annotation>
+          <xsd:documentation>The latitude and longitude of a fix.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="namedFix">
+        <xsd:annotation>
+          <xsd:documentation>Name of a fix representing a geographic point.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="fixNameType"/>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="fixRadialDistance" type="fixRadialDistanceType">
+        <xsd:annotation>
+          <xsd:documentation>Fix Radial Distance identifies a geographic point in terms of a fix name, a radial from that fix name and a distance from that fix name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="flightAircraftSpecificationType">
+    <xsd:annotation>
+      <xsd:documentation>Contains the specifications of the aircraft type of the flight plan needed for flight data processing.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="typeOfAircraftType">
+        <xsd:attribute name="numberOfAircraft" type="numberOfAircraftType">
+          <xsd:annotation>
+            <xsd:documentation>Number of aircraft associated with this flight plan (as in formation flights).</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="specialAircraftQualifier" type="specialAircraftQualifierType">
+          <xsd:annotation>
+            <xsd:documentation>This indicator is used for output purposes such as strip printing and message transfers to other facilities such as ARTS. The values can be both Heavy-Jet and TCAS;Heavy-Jet;B757;B757 with TCAS; and TCAS.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="equipmentQualifier" type="airborneEquipmentQualifierType">
+          <xsd:annotation>
+            <xsd:documentation>An indicator used to describe the type of navigational equipment used by the aircraft. Meanings are center specific. adapts it to. Should use more descriptive enumerations in it's simple type definition.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="aircraftEngineClass" type="aircraftEngineClassType">
+          <xsd:annotation>
+            <xsd:documentation>Aircraft Engine Class indicates an aircraft's power source.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="flightAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>The flightAltitudeType is used to report the altitudes used in the NAS.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="requestedAltitude" type="requestedAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Requested altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="assignedAltitude" type="assignedAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Assigned altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="flightClassType">
+    <xsd:annotation>
+      <xsd:documentation>Denotes the flight class of the aircraft which is determined by the aircraft call sign that is in the ASDI feed. Enumerated Values are: GA = General Aviation lifeguard flight taxi flight Canadian GA Military Flight</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="GA">
+        <xsd:annotation>
+          <xsd:documentation>General Aviation</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="lifeguard">
+        <xsd:annotation>
+          <xsd:documentation>lifeguard flight</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="taxi">
+        <xsd:annotation>
+          <xsd:documentation>taxi flights</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Canadian GA">
+        <xsd:annotation>
+          <xsd:documentation>Canadian General Aviation</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Military">
+        <xsd:annotation>
+          <xsd:documentation>Military flight</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="flightComputerIdType">
+    <xsd:annotation>
+      <xsd:documentation>Used to uniquely identify a flight across systems. Example usage: &lt;flightComputerId&gt;&lt;facilityIdentifier&gt;ZAU&lt;/facilityIdentifier&gt;&lt;computerSystemId&gt;HCS&lt;/computerSystemId&gt;&lt;idNumber&gt;100&lt;/idNumber&gt;&lt;/flightComputerId&gt;</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="facilityIdentifier" type="facilityIdentifierType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Identification of the facility which contains the computer system which assigned the idNumber.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="computerSystemId" type="computerSystemIdType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Computer System Id of the system housed at a facility which assigned the idNumber.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="idNumber" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Id Number assigned by the described computer system belonging to the described facility.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Z0-9]{3}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="flightPlanRemarks">
+    <xsd:annotation>
+      <xsd:documentation>Flight Plan Remarks contain comments related to this flight plan.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence minOccurs="0">
+      <xsd:element name="interCenterRemarks" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Inter center remarks.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="400"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="intraCenterRemarks" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Intra center remarks.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="400"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="flightPlanSpeedType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a flight's speed type used in a flight plan.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="filedTrueAirSpeed" type="filedTrueAirspeedType">
+        <xsd:annotation>
+          <xsd:documentation>Element filedTrueAirSpeed is the speed of an aircraft relative to the air mass in which it flies, i.e. the magnitude of the vector difference of the velocity of the aircraft and the velocity of the air.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="mach" type="machSpeedType">
+        <xsd:annotation>
+          <xsd:documentation>Element Mach is the Ratio of the speed of an aircraft to the speed of sound in the atmosphere through which the aircraft travels. In the Earth's atmosphere, Mach 1 is reached when an aircraft ?passes the sound barrier?, at a velocity of 331 m/1,087 feet per second 1,192 kph/740 mph) at sea level.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="classified" type="xsd:boolean" nillable="true">
+        <xsd:annotation>
+          <xsd:documentation>Element classified defines speed as having a classified speed designator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="flightStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Flight Status Type defines the enumerated values which describe the status of a flight. If unknown, field contains blank. Refer to the documentation of each value for a description of what each value means.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "UNKNOWN" for the referent flight. An "UNKNOWN" value does not mean that there are none, but the the data was unable to be deciphered.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="NONE">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "NONE" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SCHEDULED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "SCHEDULED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CONTROLLED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "CONTROLLED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FILED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "FILED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ACTIVE">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "ACTIVE" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ASCENDING">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "ASCENDING" for a referent flight climbing in altutude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CRUISING">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "CRUISING" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DESCENDING">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "DESCENDING" for the referent flight moving from a higher to lower altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="COMPLETED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "COMPLETED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CANCELLED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "CANCELLED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DECONTROLLED">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "DECONTROLLED" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ERROR">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a flight status of "ERROR" for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="flightTimeDataType">
+    <xsd:annotation>
+      <xsd:documentation>Flight Time Data Type is used to all possible times associated with the flight if available.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="estimatedDeparture" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Estimated Departure time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="estimatedArrival" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Estimated Arrival time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="originalDeparture" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Original Departure time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="originalArrival" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Original Arrival time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="gateDeparture" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Gate Departure time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="gateArrival" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Gate Arrival time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="runwayDeparture" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Runway Departure time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="runwayArrival" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Runway Arrival time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="airlineOffTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Airline Off time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="airlineOnTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Airline On time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="airlineInTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Airline In time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="airlineOutTime" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>Airline Out time for the referent flight in the xsd:dateTime format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="flightCreation" type="xsd:dateTime">
+      <xsd:annotation>
+        <xsd:documentation>The date and time the flight was created in TFMS.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="flightTraversalDataType2">
+    <xsd:annotation>
+      <xsd:documentation>This form of the flightTraversalDataType groups the data more like the original legacy message. Waypoints, sectors, fixes, airways, and centers are ordered lists within their parent elements.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="fix" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Fix identifier.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="fixNameType">
+              <xsd:attribute name="sequenceNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Sequence number attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="elapsedTime" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                  <xsd:documentation>Time in seconds to arrive at fix relative to departure time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="waypoint" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Waypoint definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="positionType">
+              <xsd:attribute name="sequenceNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Sequence number attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="elapsedTime" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                  <xsd:documentation>Time in seconds to arrive at waypoint relative to departure time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="airway" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Airway definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="routeNameType">
+              <xsd:attribute name="sequenceNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Sequence number attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="center" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Center definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="facilityIdentifierType">
+              <xsd:attribute name="sequenceNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Sequence number attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="elapsedEntryTime" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                  <xsd:documentation>Time in seconds to arrive at center entry point relative to departure time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="sector" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Sector definition.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="sectorIdentifierType">
+              <xsd:attribute name="sequenceNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Sequence number attribute.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+              <xsd:attribute name="elapsedEntryTime" type="xsd:positiveInteger" use="optional">
+                <xsd:annotation>
+                  <xsd:documentation>Time in seconds to arrive at sector entry point relative to departure time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="generalAircraftCategoryType">
+    <xsd:annotation>
+      <xsd:documentation>General Aircraft Category Type is used to describe an aircraft's detailed engine type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SINGLE_PISTON_PROP">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a single piston prop aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MULTI_PISTON_PROP">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a multi piston prop aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SINGLE_TURBO_PROP">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a single turbo prop aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MULTI_TURBO_PROP">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a multi turbo prop aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CIVILIAN_JET">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a civilian jet aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MILITARY_FIGHTER_JET">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a military fighter jet aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MILITARY_LARGE_JET">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a large military jet aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SPECIAL_TURBO_JET">
+        <xsd:annotation>
+          <xsd:documentation>Indicates a special turbo jet aircraft.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HELICOPTER">
+        <xsd:annotation>
+          <xsd:documentation>Indicates the aircraft is a helicopter.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="generalAircraftUserClassType">
+    <xsd:annotation>
+      <xsd:documentation>General Aircraft User Class Type is used to describe an aircraft's user class.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIR TAXI">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of "AIR TAXI" for the referent flight. Air Taxi is defined as a small aircraft that makes short local flights to areas not serviced by regular airlines.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CARGO">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of CARGO for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="COMMERCIAL">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of COMMERCIAL for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GENERAL AVIATION">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of GENERAL AVIATION for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="MILITARY">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of MILITARY for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OTHER">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of OTHER for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UNKNOWN">
+        <xsd:annotation>
+          <xsd:documentation>Indicates an Aircraft User Class Type of UNKNOWN	for the referent flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="generalAircraftWeightType">
+    <xsd:annotation>
+      <xsd:documentation>General Aircraft Weight Type is used to describe an aircraft's weight category.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="HEAVY">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft capable of takeoff weights of more than 255,000 pounds whether or not they are operating at this weight during a particular phase of flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="LARGE">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft of more than 41,000 pounds, maximum certificated takeoff weight, up to 255,000 pounds.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SMALL">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft of 41,000 pounds or less maximum certificated takeoff weight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="groundSpeedType">
+    <xsd:annotation>
+      <xsd:documentation>Ground speed value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="latitudeDecimalType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set constraints on Latitude Decimal degrees when used in decimal degree format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:float">
+      <xsd:minInclusive value="-5400"/>
+      <xsd:maxInclusive value="5400"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="latitudeDegreesType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set the constraints on latitude degrees when used in degree minute format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="90"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="latitudeDirectionType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set the constraints on direction of latitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NORTH"/>
+      <xsd:enumeration value="SOUTH"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="latitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Describes a parallel of latitude. Used with a longitude, a geographical point can be realized.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="latitudeDMS">
+        <xsd:annotation>
+          <xsd:documentation>Latitude given by degrees, minutes and(optionally) seconds. An optional indication of direction is also given. latitude cannot be greater than 90 degrees. When the direction attribute is missing, a value of "NORTH" is assumed. e.g. &lt;latitudeDMS degrees="46" minutes="0" direction="NORTH" /&gt;</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="degrees" type="latitudeDegreesType" use="required">
+            <xsd:annotation>
+              <xsd:documentation>Degrees latitude. Positive values only.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="minutes" type="secOfMinuteOfDegreeType" use="required">
+            <xsd:annotation>
+              <xsd:documentation>Minutes of latitude, where 60 minutes = 1 degree. Positive values only.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="seconds" type="secOfMinuteOfDegreeType">
+            <xsd:annotation>
+              <xsd:documentation>Seconds of latitude where 60 seconds = 1 minute of arc. This attribute is optional.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="direction" type="latitudeDirectionType" default="NORTH">
+            <xsd:annotation>
+              <xsd:documentation>Indicates the direction of latitude."NORTH" indicates parallels above the equator, while "SOUTH" indicates parallels below the equator. When absent, a direction of "NORTH" is implied.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="latitudeDecimal" type="latitudeDecimalType">
+        <xsd:annotation>
+          <xsd:documentation>Latitude given in minutes. That is: degrees*60 + minutes + (minutes/seconds) Positive values indicate a parallel above the equator, while negative indicate a parallel below the equator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="latitudeRadians" type="xsd:float">
+        <xsd:annotation>
+          <xsd:documentation>Latitude given in radians. Latitude is in the range -PI/2 to PI/2 radians. Positive values indicate a parallel above the equator, while negative indicate a parallel below the equator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="latlongType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a geographic point defined by latitude and longitude. Any of the three formats for latitude and longitude may be used: 1) degrees minutes seconds 2) minutes with fractional minutes 3) radians</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="latitude" type="latitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Latitude element of the latlongType definition. Any of the three formats for latitude may be used: 1) degrees minutes seconds 2) minutes with fractional minutes 3) radians</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="longitude" type="longitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Longitude element of the latlongType definition. Any of the three formats for latitude may be used: 1) degrees minutes seconds 2) minutes with fractional minutes 3) radians</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="longitudeDecimalType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set constraints on Longitude Decimal degrees when used in decimal degree format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:float">
+      <xsd:minInclusive value="-10800"/>
+      <xsd:maxInclusive value="10800"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="longitudeDegreesType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set the constraints on longitude degrees when used in degree minute format.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="180"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="longitudeDirectionType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set the constraints on direction of longitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="EAST"/>
+      <xsd:enumeration value="WEST"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="longitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Describes a meridian of longitude. Used with a latitude, a geographical point can be realized.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="longitudeDMS">
+        <xsd:annotation>
+          <xsd:documentation>Longitude given by degrees, minutes and(optionally) seconds. An optional indication of direction is also given. longitude cannot be greater than 180 degrees. When the direction attribute is missing, a value of "WEST" is assumed. e.g. &lt;longitudeDMS degrees="80"minutes="0" direction="WEST" /&gt;.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:attribute name="degrees" type="longitudeDegreesType" use="required">
+            <xsd:annotation>
+              <xsd:documentation>Degrees of the meridian. Can be positive whole degrees only.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="minutes" type="secOfMinuteOfDegreeType" use="required">
+            <xsd:annotation>
+              <xsd:documentation>Minutes of longitude where 60 minutes = 1 degree of longitude.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="seconds" type="secOfMinuteOfDegreeType">
+            <xsd:annotation>
+              <xsd:documentation>Seconds of longitude where 60 seconds = 1 minute of arc. This attribute is optional.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+          <xsd:attribute name="direction" type="longitudeDirectionType" default="WEST">
+            <xsd:annotation>
+              <xsd:documentation>Direction given for longitude either east or west with west being the default.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="longitudeDecimal">
+        <xsd:annotation>
+          <xsd:documentation>Longitude given in minutes. That is: degrees*60 + minutes + (minutes/seconds) Positive values indicate a meridian east of the GM, while negative indicate a meridian west of it.-180 = +180 = 0 = the GM.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="longitudeDecimalType"/>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="longitudeRadians" type="xsd:float">
+        <xsd:annotation>
+          <xsd:documentation>Longitude given in radians. Longitude range in radians is negative pi to positive pi; with positive values indicate a meridian east of the GM, while negative indicate a meridian west of it.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="loopReEntryType">
+    <xsd:annotation>
+      <xsd:documentation>A coded route with a re-entry option adapted; which includes an adapted entry/exit fix. the documentation of the elements which realize it.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="machSpeedType">
+    <xsd:annotation>
+      <xsd:documentation>Mach speed type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="500"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="numberOfAircraftType">
+    <xsd:annotation>
+      <xsd:documentation>NAS Field Reference: Field 03a. NAS Format: (d)d Number of aircraft in flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="99"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="oceanicPositionDataType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing the elements necessary to provide a flight's position over an ocean.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="position" type="latlongType">
+        <xsd:annotation>
+          <xsd:documentation>Position latitude and longitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altitude" type="simpleAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Altitude in 100 of feet.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="time" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Date and time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="positionType">
+    <xsd:annotation>
+      <xsd:documentation>Position data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="latitudeDecimal" type="latitudeDecimalType">
+      <xsd:annotation>
+        <xsd:documentation>Latitude in decimal degrees.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="longitudeDecimal" type="longitudeDecimalType">
+      <xsd:annotation>
+        <xsd:documentation>Longitude in decimal degrees.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="qualifiedAircraftIdType">
+    <xsd:annotation>
+      <xsd:documentation>The qualifiedAircraftIdType describes the combination of elements contained within a flight plan, which together can be used to more accurately identify and particular flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="aircraftId" type="aircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="computerId" type="flightComputerIdType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Facility unique flight identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="gufi" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Facility unique flight identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="igtd" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Initial gate departure time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="departurePoint" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Departure point.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="fix" type="fixType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Fix name.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="airport" type="airportIdType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Airport identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="facilityId" type="facilityIdentifierType" use="optional">
+            <xsd:annotation>
+              <xsd:documentation>Facility identifier.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="arrivalPoint" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival point.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="fix" type="fixType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Fix identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="airport" type="airportIdType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Airport identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="facilityId" type="facilityIdentifierType" use="optional">
+            <xsd:annotation>
+              <xsd:documentation>Facility identifier.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="flightClass" type="flightClassType">
+      <xsd:annotation>
+        <xsd:documentation>Flight class attribute type such as general aviation, military, etc.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="radialDegreesType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to place constraints on the number of degrees in a circle. Used primarily by fixRadialDistanceType data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="360"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="radialDistanceType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to place constraints on the value of the radial distance. Used primarily by fixRadialDistanceType data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:pattern value="[0-9]{1,3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="reportedAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing the elements necessary to provide a flight's reported altitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="simpleAltitudeType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="requestedAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing the elements necessary to provide a flight's requested altitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="simpleAltitude">
+        <xsd:annotation>
+          <xsd:documentation>Altitude in 100 of feet.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="simpleAltitudeType">
+              <xsd:attribute name="above" type="xsd:boolean">
+                <xsd:annotation>
+                  <xsd:documentation>Flight operating above a specified altitude.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="blockedAltitude" type="blockedAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Altitude range: Lower and upper.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="visualFlightRules" type="visualFlightRulesType">
+        <xsd:annotation>
+          <xsd:documentation>Visual flight rules.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="routeNameType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type defining the structure for describing the elements necessary to define the identity of a flight's route.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z0-9]{2,8}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="routeOfFlightType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a flight's route of flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence minOccurs="0" maxOccurs="48">
+      <xsd:choice minOccurs="0">
+        <xsd:element name="departurePoint">
+          <xsd:annotation>
+            <xsd:documentation>Defines a departure point.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:complexContent>
+              <xsd:extension base="fixType">
+                <xsd:attribute name="facilityId" type="facilityIdentifierType">
+                  <xsd:annotation>
+                    <xsd:documentation>Facility identifier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:extension>
+            </xsd:complexContent>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="adaptedDeparture">
+          <xsd:annotation>
+            <xsd:documentation>Adapted departure definition.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="airport" type="fixNameType">
+                <xsd:annotation>
+                  <xsd:documentation>The Airport identifier.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="transitionFix" type="fixType">
+                <xsd:annotation>
+                  <xsd:documentation>The transition fix identifier.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="routeName" type="standardInstrumentDepartureRouteNameType">
+              <xsd:annotation>
+                <xsd:documentation>Route identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:element name="enRouteElements" type="enRouteElementType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The enroute elements.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice minOccurs="0">
+        <xsd:element name="arrivalPoint">
+          <xsd:annotation>
+            <xsd:documentation>Arrival point definition.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:complexContent>
+              <xsd:extension base="fixType">
+                <xsd:attribute name="estimatedTimeOfArrival" type="xsd:dateTime">
+                  <xsd:annotation>
+                    <xsd:documentation>Estimated time of arrival.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="facilityId" type="facilityIdentifierType">
+                  <xsd:annotation>
+                    <xsd:documentation>Facility identifier.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:attribute>
+              </xsd:extension>
+            </xsd:complexContent>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="adaptedArrival">
+          <xsd:annotation>
+            <xsd:documentation>Adapted arrival definition.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="transitionFix" type="fixType">
+                <xsd:annotation>
+                  <xsd:documentation>Transition fix identifier.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+              <xsd:element name="airport" type="fixNameType">
+                <xsd:annotation>
+                  <xsd:documentation>Airport identifier.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="routeName" type="standardArrivalRouteNameType">
+              <xsd:annotation>
+                <xsd:documentation>Route identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="isTailored" type="xsd:boolean" default="false">
+      <xsd:annotation>
+        <xsd:documentation>Route is tailored.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="isIncomplete" type="xsd:boolean" default="false">
+      <xsd:annotation>
+        <xsd:documentation>Route is incomplete.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="prohibitPrefDRoutes" type="xsd:boolean" default="false">
+      <xsd:annotation>
+        <xsd:documentation>Prohibit preferred departure routes.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="prohibitPrefARoutes" type="xsd:boolean" default="false">
+      <xsd:annotation>
+        <xsd:documentation>Prohibit preferred arrival routes.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="legacyFormat" type="field10FormatType">
+      <xsd:annotation>
+        <xsd:documentation>Route definition in legacy format.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="routeTypesType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type defining the structure for describing the elements necessary to define the identity of a flight's route type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIRWAY"/>
+      <xsd:enumeration value="CODED_ROUTE"/>
+      <xsd:enumeration value="DIRECT"/>
+      <xsd:enumeration value="SID"/>
+      <xsd:enumeration value="STAR"/>
+      <xsd:enumeration value="PAR"/>
+      <xsd:enumeration value="PDR"/>
+      <xsd:enumeration value="PDAR"/>
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="rvsmComplianceType">
+    <xsd:annotation>
+      <xsd:documentation>Defines flight's RVSM compliance state.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="equipped" type="xsd:boolean" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Defines if flight is RVSM equipped.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="currentCompliance" type="xsd:boolean" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Defines if flight is currently RVSM compliant.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="futureCompliance" type="xsd:boolean" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Defines if flight will be RVSM compliant in the future.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="secOfMinuteOfDegreeType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to set constraints on minutes and seconds when used in degrees minutes seconds.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="59"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="sectorIdentifierType">
+    <xsd:annotation>
+      <xsd:documentation>This was made to accommodate ASDI sector names</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z]{1}[A-Z0-9\-]{2,9}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="simpleAltitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to place constraints on a flight's altitude. The altitude can represent a number of values as reported by NAS. Please refer to NAS MD-314 section 3.1 for details. The message from HADDS to TFMS is constrained to include an assigned altitude, nnn, or a beacon reported altitude, nnn + 'C', or an interim altitude, nnn + 'T'. Allowed format: [0-9]{0,3}[C,T]{0,1}. Where C = Beacon reported altitude is within Altitude Conformance Limits (ALCT) feet and T = Interim altitude is currently being displayed in the assigned altitude field.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{0,3}[C,T]{0,1}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="specialAircraftQualifierType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to place constraints on a flight's special Aircraft Qualifier. When Field 12 references
+                            ?SAI? or ?22?, the contents of its paired Field 17 must be one letter, either ?H? (Heavy-Jet), ?T?
+                            (TCAS), ?B? (Both Heavy-Jet and TCAS), ?F? (B757) or
+                            ?L? (B757 with TCAS). Otherwise, the following reject message is returned: REJECT ? SAI cofie FORMAT</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="HEAVY JET">
+        <xsd:annotation>
+          <xsd:documentation>H = Heavy Jet</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TCAS">
+        <xsd:annotation>
+          <xsd:documentation>T = TCAS</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="B757_TCAS">
+        <xsd:annotation>
+          <xsd:documentation>L = B757 and TCAS</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="B757">
+        <xsd:annotation>
+          <xsd:documentation>F = B757</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HEAVY JET_TCAS">
+        <xsd:annotation>
+          <xsd:documentation>B = Both Heavy Jet and TCAS</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="WAKE TURBULENCE">
+        <xsd:annotation>
+          <xsd:documentation>M = Wake Turbulence</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OTHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="speedType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a flight's speed type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice>
+      <xsd:element name="filedTrueAirSpeed" type="filedTrueAirspeedType">
+        <xsd:annotation>
+          <xsd:documentation>Element filedTrueAirSpeed is the speed of an aircraft relative to the air mass in which it flies, i.e. the magnitude of the vector difference of the velocity of the aircraft and the velocity of the air.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="groundSpeed" type="groundSpeedType">
+        <xsd:annotation>
+          <xsd:documentation>Element groundSpeed is the speed of an aircraft relative to the ground. It is the sum of the aircraft's true airspeed and the current wind and weather conditions.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="mach" type="machSpeedType">
+        <xsd:annotation>
+          <xsd:documentation>Element Mach is the Ratio of the speed of an aircraft to the speed of sound in the atmosphere through which the aircraft travels. In the Earth's atmosphere, Mach 1 is reached when an aircraft ?passes the sound barrier?, at a velocity of 331 m/1,087 feet per second
+                                  (1,192 kph/740 mph) at sea level.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="classified" type="xsd:boolean" nillable="true">
+        <xsd:annotation>
+          <xsd:documentation>Element classified defines speed as having a classified speed designator.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:simpleType name="standardArrivalRouteNameType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type used to place constraints on a flight's standard arrival route name.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9]{2,5}[0-9]."/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="standardInstrumentDepartureRouteNameType">
+    <xsd:annotation>
+      <xsd:documentation>Simple type defining the structure and constraints for a standard Instrument Departure (SID) Route Name type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9]{2,5}[0-9]."/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="timeOfArrivalType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a flight's time of arrival type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:dateTime">
+        <xsd:attribute name="estimated" type="xsd:boolean" default="false">
+          <xsd:annotation>
+            <xsd:documentation>Time of arrival is estimated.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:simpleType name="tmiVisibilityDomainType">
+    <xsd:annotation>
+      <xsd:documentation>Possible values are PUBLIC,  SHARED, LOCAL, or PRIVATE. PUBLIC is visible across all Centers, SHARED is visible to only a list of Centers, LOCAL it is visible at a single Center, PRIVATE it is only visible to a single workstation.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PUBLIC"/>
+      <xsd:enumeration value="SHARED"/>
+      <xsd:enumeration value="LOCAL"/>
+      <xsd:enumeration value="PRIVATE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="typeOfAircraftType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure and constraints of a flight's aircraft type.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z][A-Z0-9]{1,3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="visualFlightRulesType">
+    <xsd:annotation>
+      <xsd:documentation>Complex type defining the structure for describing a flight's visual flight rules type. When OTP, the optional vrfOnTOP attribute = true. When OTP/(d)dd, the optional vfrOnTOP attribute = true, AND the optional altitude attribute is occupied with the value in format (d)dd. When VFR, the optional attributes altitude and vrfOnTop are not present. When VFR/(d)dd, the optional altitude attribute is occupied with the value in format (d)dd.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="altitude" type="simpleAltitudeType">
+      <xsd:annotation>
+        <xsd:documentation>Altitude value.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="vfrOnTop" type="xsd:boolean">
+      <xsd:annotation>
+        <xsd:documentation>It is VFR ON TOP if true.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="sensitivityType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the sensitivity data for ATFD, TMID, ENVD or any other data distributed using SWIM standards.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="R">
+        <xsd:annotation>
+          <xsd:documentation>Sensitive data for distribution to govenment agency only.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="A">
+        <xsd:annotation>
+          <xsd:documentation>Data that can be distributed to all users including delayed users.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="D">
+        <xsd:annotation>
+          <xsd:documentation>Duplication of sensitive data but sanitized, i.e. sensitive data removed. It can be distributed to all users except government agency.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="flagType">
+    <xsd:annotation>
+      <xsd:documentation>. Format is Y if true, - if false.</xsd:documentation>
+      <xsd:appinfo>
+        <errorCode>ERR399</errorCode>
+        <errorMsg>UNKNOWN SYNTAX ERROR.</errorMsg>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Y"/>
+      <xsd:enumeration value="-"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="uuidType">
+    <xsd:annotation>
+      <xsd:documentation>Unique Identifier with the format 8-4-4-4-12 hed digits generated in accordance with RFC 4122</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,34 @@
+version: '3.5'
+
+services:
+  grafana:
+    container_name: grafana
+    user: "root"
+    image: grafana/grafana:6.6.1
+    ports:
+      - 3000:3000
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+  postgres:
+    container_name: postgres
+    image: postgres:10-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+  pgweb:
+    container_name: pgweb
+    image: sosedoff/pgweb:latest
+    restart: always
+    ports:
+      - "8080:8081"
+    links:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/test?sslmode=disable
+    depends_on:
+      - postgres

@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:us:gov:dot:faa:atm:tfm:flightdata"
+            xmlns:nxcm="urn:us:gov:dot:faa:atm:tfm:flightdatacommonmessages"
+            xmlns:nxce="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:flightdata" version="2.0.3" elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:flightdatacommonmessages"
+              schemaLocation="FlightDataCommonMessages.xsd">
+    <xsd:annotation>
+      <xsd:documentation>Import for Flight Data Common Message definitions.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:import>
+  <xsd:simpleType name="messageType">
+    <xsd:annotation>
+      <xsd:documentation>Enumerated type used to identify the message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="flightPlanAmendmentInformation">
+        <xsd:annotation>
+          <xsd:documentation>Amendment</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="arrivalInformation">
+        <xsd:annotation>
+          <xsd:documentation>Arrival</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="departureInformation">
+        <xsd:annotation>
+          <xsd:documentation>Departure</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="flightPlanInformation">
+        <xsd:annotation>
+          <xsd:documentation>Flight Plan</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="flightPlanCancellation">
+        <xsd:annotation>
+          <xsd:documentation>Cancellation</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="boundaryCrossingUpdate">
+        <xsd:annotation>
+          <xsd:documentation>Update</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="trackInformation">
+        <xsd:annotation>
+          <xsd:documentation>5 minute location update</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="oceanicReport">
+        <xsd:annotation>
+          <xsd:documentation>Oceanic Update</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="beaconCodeInformation">
+        <xsd:annotation>
+          <xsd:documentation>Beacon Code messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightCreate">
+        <xsd:annotation>
+          <xsd:documentation>Flight Create messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightModify">
+        <xsd:annotation>
+          <xsd:documentation>Flight Modify messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightControl">
+        <xsd:annotation>
+          <xsd:documentation>Flight Contro Data messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightScheduleActivate">
+        <xsd:annotation>
+          <xsd:documentation>Flight schedule activation  messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightRoute">
+        <xsd:annotation>
+          <xsd:documentation>Flight Route Data messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightSectors">
+        <xsd:annotation>
+          <xsd:documentation>Flight Sector Data messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FlightTimes">
+        <xsd:annotation>
+          <xsd:documentation>Flight Times data messages</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="fdTriggerType">
+    <xsd:annotation>
+      <xsd:documentation>Enumerated type used to describe what triggered a Flight Data message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ACTIVATE_CMD">
+        <xsd:annotation>
+          <xsd:documentation>Activate command.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ACTIVATE_SCHEDULED_FLIGHTS">
+        <xsd:annotation>
+          <xsd:documentation>Activate scheduled flights.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AIRSPACE_ASSIGNMENT">
+        <xsd:annotation>
+          <xsd:documentation>Airspace assignment.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CACR_EDCT">
+        <xsd:annotation>
+          <xsd:documentation>CACR EDCT.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CANCEL_CMD">
+        <xsd:annotation>
+          <xsd:documentation>Cancel command.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CTOP_ROUTE_ASSIGNMENT">
+        <xsd:annotation>
+          <xsd:documentation>CTOP route assignment.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CTOP_ROUTE_CANCEL">
+        <xsd:annotation>
+          <xsd:documentation>CTOP route cancel.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="EARLY_INTENT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Early intent message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FD_FLIGHT_CANCEL_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Flight cancel message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FD_FLIGHT_CREATE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Flight cancel message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FD_FLIGHT_MODIFY_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Flight modify message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_AMENDMENT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Amendment message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_ARRIVAL_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Arrival message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_BEACON_CODE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Tack message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_CANCELLATION_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Cancellation message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_DEPARTURE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Departure message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_FLIGHT_PLAN_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Flight plan message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_OCEANIC_POSITION_REPORT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Oceanin position message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_TRACK_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Tack message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="HCS_UPDATE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Boundary crossing message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_AMENDMENT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Amendment message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_ARRIVAL_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Arrival message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_BEACON_CODE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Track message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_CANCELLATION_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Cancellation message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_DEPARTURE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Departure message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_FLIGHT_PLAN_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Flight plan message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_OCEANIC_POSITION_REPORT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Oceanic position message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="IADE_TRACK_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Track message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="NEMS_TBFM_FLT_DEPARTURE_MSG">
+        <xsd:annotation>
+          <xsd:documentation>A scheduled time of departure.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="RECOMPUTE_NCSM">
+        <xsd:annotation>
+          <xsd:documentation>Restore command.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REMOVE_CMD">
+        <xsd:annotation>
+          <xsd:documentation>Remove command</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REROUTE_ASSIGNED_ROUTE">
+        <xsd:annotation>
+          <xsd:documentation>Reroute assigned route.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REROUTE_HISTORICAL_ROUTE">
+        <xsd:annotation>
+          <xsd:documentation>Reroute historical route.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="RESTORE_CMD">
+        <xsd:annotation>
+          <xsd:documentation>Restore command.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SMA_TRACK_MSG">
+        <xsd:annotation>
+          <xsd:documentation>Rrack message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="STDDS_SURFACE_MOVEMENT_MSG">
+        <xsd:annotation>
+          <xsd:documentation>A surface movement event.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TMI_UPDATE">
+        <xsd:annotation>
+          <xsd:documentation>A scheduled time of departure.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TRAJECTORY_OPTION_SET_MSG">
+        <xsd:annotation>
+          <xsd:documentation>TOS message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_CANCEL_SCHEDULE_TIMEOUT">
+        <xsd:annotation>
+          <xsd:documentation>Update cancel schedule timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_CANCEL_TIMEOUT">
+        <xsd:annotation>
+          <xsd:documentation>Update cancel schedule timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_COMPLETE_TIMEOUT">
+        <xsd:annotation>
+          <xsd:documentation>Update complete timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_DEPARTURE_TIMEOUT">
+        <xsd:annotation>
+          <xsd:documentation>Update departure timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_INHIBIT_FLIGHTS">
+        <xsd:annotation>
+          <xsd:documentation>Update cancel schedule timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="UPDATE_INTERNATIONAL_CANCEL_TIMEOUT">
+        <xsd:annotation>
+          <xsd:documentation>Update cancel schedule timeout.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="fltdMessageType">
+    <xsd:annotation>
+      <xsd:documentation>The fltdMessageType defines the attributes to be used for filtering. A realization of this complex type should exist for each flight data message that is sent to NEMS.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="sensitivity" type="nxce:sensitivityType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Defines the sensitivity of the data for distribution: R - government agency only, A - all users including government, D - all users except government because duplicate.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="cdmPart" type="xsd:boolean" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>If true, the flight belongs to a CDM participant.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="airline" type="nxce:airlineIdType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Three character airline identifier. If the aircraft is not associated with an airline the value will be XXX.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sourceFacility" type="nxce:facilityIdentifierType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The sourceFacility identifies the facility (Center or TRACON) which generated the original message that triggered this Flight Data message to be sent.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sourceTimeStamp" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The sourceTimeStamp identifies the time the original message that triggered this Flight Data message to be sent was sent by the facility identified by attribute sourceFacility.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="flightRef" type="xsd:integer" use="required">
+      <xsd:annotation>
+        <xsd:documentation>A reference number used to correlate the flight data messages.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+     <xsd:attribute name="acid" type="nxce:aircraftIdType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>A reference number used to correlate the flight data messages.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+   <xsd:attribute name="msgType" type="messageType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Indicates the type of message sent to NEMS.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="fdTrigger" type="fdTriggerType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Indicates the type of message that triggered the message to be sent to NEMS.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="depArpt" type="nxce:airportIdType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The flight's departure airport, if known.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="arrArpt" type="nxce:airportIdType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The flight's arrival airport, if known.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sensReason" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Indicates the reason the message is sensitive: FM - Military flight, FS - sensitive flight, DR - data restriction. Note: FM and FS have precedence over DR. Only present in a sensitive=R message.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FM"/>
+      <xsd:enumeration value="FS"/>
+      <xsd:enumeration value="DR"/>
+      </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="fltdOutputType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the Flight Data message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence maxOccurs="128">
+      <xsd:annotation>
+        <xsd:documentation>Flight Data Messages may be batched up to a maximum of 128.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:element name="fltdMessage">
+        <xsd:annotation>
+          <xsd:documentation>Realization of the fltdMessageType. There exists one fltdMessage element for each individual message of the batch of messages sent from the TFMS.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="fltdMessageType">
+              <xsd:choice>
+                <xsd:annotation>
+                  <xsd:documentation>Anyone of the following messages may be contained within the fltdMessage tags. There is only one message per set of fltdMessage tags.</xsd:documentation>
+                </xsd:annotation>
+                <xsd:element name="flightPlanInformation" type="nxcm:flightPlanType">
+                  <xsd:annotation>
+                    <xsd:documentation>The Flight Plan Information Message is used to provide flight plan data for all eligible flight plans.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="flightPlanAmendmentInformation" type="nxcm:flightPlanAmendmentType">
+                  <xsd:annotation>
+                    <xsd:documentation>The flightPlanAmendment message provides revised flight plan data as the result of a flight plan being successfully amended.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="arrivalInformation" type="nxcm:arrivalInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>Arrival Information Message is used to provide arrival date and time information for all eligible arriving flights.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="beaconCodeInformation" type="nxcm:beaconCodeInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>The Beacon Code Information Message provides beacon code data on eligible flight plans.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="departureInformation" type="nxcm:departureInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>The Departure Information message is transmitted for all eligible initially activated flight plans.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="flightPlanCancellation" type="nxcm:flightPlanCancellationType">
+                  <xsd:annotation>
+                    <xsd:documentation>Flight Plan Cancellation messages are used to provide cancellation data for all eligible flight plans when a cancel message is received from the Host/ERAM or IADE interface or an operator action associated with the schedule database that causes previously Schedule Activated flights inserted into the NCSM to be canceled.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="trackInformation" type="nxcm:trackInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>Track Information messages are used to provide a position update for the identified flight. In cases where the track position causes a route re-conformance (trajectory modeling) additional route data is provided. The messages are transmitted as received by TFMS on a cyclic basis.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="boundaryCrossingUpdate" type="nxcm:boundaryCrossingUpdateType">
+                  <xsd:annotation>
+                    <xsd:documentation>Boundary Crossing Update Information (UZ) messages are used to provide current flight plan information on active eligible flights that enter an ARTCC. Generally speaking, the message is an ARTCC boundary crossing message.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="oceanicReport" type="nxcm:oceanicReportType">
+                  <xsd:annotation>
+                    <xsd:documentation>The Oceanic Report message is transmitted for a flight by the TFMS to the NEMS when the data is available.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightControl" type="nxcm:ncsmControlInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Control message is used to provide control data for messages/events that cause EDCT to be issued.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightCreate" type="nxcm:ncsmFlightCreateOrModifyInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Create message is used to provide create data when CDM a flight create message is received.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightModify" type="nxcm:ncsmFlightCreateOrModifyInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Modify message is used to provide modify data when CDM a flight modify message is received.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightScheduleActivate" type="nxcm:ncsmFlightRouteInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM FlightScheduleActivate message is used to provide data flight data whenever an operator command or automatic timer causes a flight in the schedule database to be inserted into the NCSM. The timer is a five minute timer that causes flight's to be entered into the NCSM for demand prediction purpose 24 hours prior to their departure time.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightRoute" type="nxcm:ncsmFlightRouteInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Route message is used to provide route data for events that cause the flight route to be updated. The events are associated with CTOP or Reroute TMIs. They are also used to update the route information when the weekly adaptation data update is performed.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightSectors" type="nxcm:ncsmSectorsInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Sectors message is used to provide updated sector crossing data an Airspace Assignment message is received.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ncsmFlightTimes" type="nxcm:ncsmFlightTimeInformationType">
+                  <xsd:annotation>
+                    <xsd:documentation>NCSM Flight Times message is used to provide updates of flight time data when departure or arrival times change due lateness in departure, a TBFM issued Scheduled Time of Departure, or STDDS surface movement events..</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="source" type="sourceType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Message source: Facility/System that originated the data.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="xmitTime" type="xsd:dateTime" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The time that the individual messages were packed for transmission by TFMS.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="sourceType">
+    <xsd:annotation>
+      <xsd:documentation>Business Function transmitting the message e.g. TFMData.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="15"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:annotation>
+    <xsd:documentation>TrafficFlow Management System (TFMS) allows near real-time air traffic data to be disseminated to members of the aviation industry. Schema defines the message set, format and validation rules for messages sent between TFMS and NEMS.</xsd:documentation>
+  </xsd:annotation>
+</xsd:schema>

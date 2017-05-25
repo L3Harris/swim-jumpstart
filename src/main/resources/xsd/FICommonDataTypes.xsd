@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes"
+            xmlns:nxce="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" 
+            version="2.0.4"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" 
+            elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:complexType name="coordinateType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the coordinates of a point using latitude and longitude.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="latitude">
+        <xsd:annotation>
+          <xsd:documentation>The angular distance north or south of the equator in degrees.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="-?((0?[0-9])|([1-5][0-9])|(60))\.[0-9]{1,8}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="longitude">
+        <xsd:annotation>
+          <xsd:documentation>The angular distance east or west of the prime meridian in degrees.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="-?((0?0?[0-9])|(0?[1-9][0-9])|(1[0-7][0-9])|(180))\.[0-9]{1,8}"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="dateRangeType">
+    <xsd:annotation>
+      <xsd:documentation>Range of date values from start to end date up to the day precision.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="startDate" type="xsd:date" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The first date in the range of date values.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="endDate" type="xsd:date" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The last date in a range of date values.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="dateTimeRangeType">
+    <xsd:annotation>
+      <xsd:documentation>Range of date values from start to end date up to the second precision.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="startDate" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The first date in the range of date values.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="endDate" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The last date in a range of date values.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:simpleType name="advisoryStateType">
+    <xsd:annotation>
+      <xsd:documentation>PROPOSED or ACTUAL</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PROPOSED"/>
+      <xsd:enumeration value="ACTUAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="refreshType">
+    <xsd:annotation>
+      <xsd:documentation>Indicates that data is a refresh of previous data, RFRS = Refresh or NEW= New or Update data.. </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="RFRS"/>
+      <xsd:enumeration value="NEW"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="controlElementNameType">
+    <xsd:annotation>
+      <xsd:documentation>Represents a GDP control element (airport or FCA)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z][a-zA-Z]{2}[a-zA-Z]?|[a-zA-Z][a-zA-Z0-9_]{2,6}|[A]{1}[L]{2}[ ]{1}[P]{1}[R]{1}[O]{1}[G]{1}[R]{1}[A]{1}[M]{1}[S]{1}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="controlElementTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Airport or FCA</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIRPORT"/>
+      <xsd:enumeration value="FCA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="delayAssignmentModeType">
+    <xsd:annotation>
+      <xsd:documentation>DAS, UDP or GAAP</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DAS"/>
+      <xsd:enumeration value="GAAP"/>
+      <xsd:enumeration value="UDP"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="onOffType">
+    <xsd:annotation>
+      <xsd:documentation>Represents an ON/OFF switch command.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ON"/>
+      <xsd:enumeration value="OFF"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="slotNameType">
+    <xsd:annotation>
+      <xsd:documentation>Airport/FCA Name, Slot Time, Unique Letter.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="controlledElement" type="controlElementNameType">
+        <xsd:annotation>
+          <xsd:documentation>Airport or FCA name.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="slotTime" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Time flight is expected.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="uniqueLetter" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Unique letter to assure no duplicate slot names.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="tmiIdType">
+    <xsd:annotation>
+      <xsd:documentation>TMI ID. Consisting of 1 to 10 alpha numeric characters.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z0-9]{1,10}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiAircraftType">
+    <xsd:annotation>
+      <xsd:documentation>Type of aircraft.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PROP"/>
+      <xsd:enumeration value="JET"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiStatusType">
+    <xsd:annotation>
+      <xsd:documentation>The status of the TMI.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NEW"/>
+      <xsd:enumeration value="UPDATED"/>
+      <xsd:enumeration value="DELETED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="advisoryNumType">
+    <xsd:annotation>
+      <xsd:documentation>Advisory number provided by FSM.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="centerIdType">
+    <xsd:annotation>
+      <xsd:documentation>An airport is 3 to 5 alphanumeric characters.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9]{3,5}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="elementTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Type of element covered by the advisory.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="APT"/>
+      <xsd:enumeration value="FCA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="timePeriodType">
+    <xsd:annotation>
+      <xsd:documentation>Time period consisting of a start and end time.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="startTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Start time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="endTime" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>End time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="delayInfoType">
+    <xsd:annotation>
+      <xsd:documentation>Delay information consisting of total, maximum, and average delay.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="totalDelay" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>Total delay.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="maxDelay" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>Maximum delay.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="avgDelay" type="xsd:float">
+        <xsd:annotation>
+          <xsd:documentation>Average delay.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="probabilityOfExtensionType">
+    <xsd:annotation>
+      <xsd:documentation>Probability that a TMI will be extended.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NONE"/>
+      <xsd:enumeration value="LOW"/>
+      <xsd:enumeration value="MEDIUM"/>
+      <xsd:enumeration value="HIGH"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="originNameType">
+    <xsd:annotation>
+      <xsd:documentation>The origin entity that produced the Advisory.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ATCSCC"/>
+      <xsd:enumeration value="NAV CANADA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="reasonType">
+    <xsd:annotation>
+      <xsd:documentation>Specifies the reason for a TMI.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:complexType name="flightInfoListType">
+    <xsd:annotation>
+      <xsd:documentation>List of flight data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="flightInfo" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Flight data.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="flightId" type="nxce:aircraftIdType">
+              <xsd:annotation>
+                <xsd:documentation>Flight identifier.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="carrier" type="nxce:airlineIdType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Carrier name.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="propulsion" type="propulsionType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Type of propulsion.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="arrivalFix" type="nxce:fixNameType" minOccurs="0">
+              <xsd:annotation>
+                <xsd:documentation>Arrival fix name.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="propulsionType">
+    <xsd:annotation>
+      <xsd:documentation>The aircraft's type of propulsion.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="JET"/>
+      <xsd:enumeration value="PROPELLER"/>
+      <xsd:enumeration value="TURBO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="facilityListType">
+    <xsd:annotation>
+      <xsd:documentation>List of NAS facilities.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="facilityId" type="nxce:facilityIdentifierType" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Facility identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="programRateListType">
+    <xsd:annotation>
+      <xsd:documentation>List of up to eight hourly rates.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="programRate" type="xsd:integer" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Hourly rate.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="departureScopeType">
+    <xsd:annotation>
+      <xsd:documentation>One of two entries: Mileage (for distance based programs) Tier keyword (for center based programs) For keyword, the corresponding centers will be listed.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element name="mileage" type="xsd:decimal">
+          <xsd:annotation>
+            <xsd:documentation>Mileage.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="keywordList" type="facilityListType">
+          <xsd:annotation>
+            <xsd:documentation>Keyword list.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="fcaNameType">
+    <xsd:annotation>
+      <xsd:documentation>FEA/FCA Name.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="30"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="altitudeType">
+    <xsd:annotation>
+      <xsd:documentation>Altitude indicated as Flight Level (FLnnn) or SFC
+                      (surface).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="FL[0-9]{3}|SFC"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="altitudeRangeType">
+    <xsd:annotation>
+      <xsd:documentation>Altitude range consisting of a lower and upper value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="lowerAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Lower altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="upperAltitude" type="altitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Upper altitude.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="colorIdType">
+    <xsd:annotation>
+      <xsd:documentation>TFMDI color index.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="35"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="aircraftCategoryType">
+    <xsd:annotation>
+      <xsd:documentation>Aircraft category.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="JET"/>
+      <xsd:enumeration value="PROP"/>
+      <xsd:enumeration value="TURBO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="weightClassType">
+    <xsd:annotation>
+      <xsd:documentation>Weight class.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="HEAVY"/>
+      <xsd:enumeration value="LIGHT"/>
+      <xsd:enumeration value="SUPERHEAVY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="userCategoryType">
+    <xsd:annotation>
+      <xsd:documentation>User category.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIR_TAXI"/>
+      <xsd:enumeration value="CARGO"/>
+      <xsd:enumeration value="COMMERCIAL"/>
+      <xsd:enumeration value="GENERAL_AVIATION"/>
+      <xsd:enumeration value="MILITARY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="centerAirportListType">
+    <xsd:annotation>
+      <xsd:documentation>List of center and/or airport names.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="airport" type="nxce:airportIdType" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Airport identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="center" type="centerIdType" minOccurs="0" maxOccurs="unbounded">
+        <xsd:annotation>
+          <xsd:documentation>Center identifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="acAltType">
+    <xsd:annotation>
+      <xsd:documentation>Aircraft altitude in hundreds of feet from 0 to 600.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="600"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="affectedFlightStatus">
+    <xsd:annotation>
+      <xsd:documentation>Indicates the aircraft state affected by the reroute (Airborne, Not Airborne, or All Flights).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AIRBORNE"/>
+      <xsd:enumeration value="NOT_AIRBORNE"/>
+      <xsd:enumeration value="ALL_FLIGHTS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="elementNameType">
+    <xsd:annotation>
+      <xsd:documentation>This simple type defines the format for a NAS element name.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9a-zA-Z]{2,6}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiSuffixType">
+    <xsd:annotation>
+      <xsd:documentation>Suffix of the TMI ID for ERAM purposes.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{2}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="protectedSegmentType">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+      A string of max length 1000 containing a valid protected segment or 
+      "NULL". Valid characters are any letter or digit, plus '/', '+', '*', 
+      '.', ' ', and the overcast symbol.]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
+      <xsd:maxLength value="1000"/>
+      <xsd:pattern value="([A-Z]|\d|/|\+|\*|\.|\s|_|&#8853;)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="idfrType">
+    <xsd:annotation>
+      <xsd:documentation>Unique Identifier of the subject.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[0-9]{0,20}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="gufiType">
+    <xsd:annotation>
+      <xsd:documentation>Global Unique Flight Identifier.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9]{10}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="siteType">
+    <xsd:annotation>
+      <xsd:documentation>Site name the request originated.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9]{0,8}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="workstationType">
+    <xsd:annotation>
+      <xsd:documentation>Workstation name the request originated.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[a-zA-Z0-9]{2,8}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiNameType">
+    <xsd:annotation>
+      <xsd:documentation>TMI Name</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="CTP\d{3}|[a-zA-Z0-9_\-:]{2,64}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tmiType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="REROUTE">
+        <xsd:annotation>
+          <xsd:documentation>The TMI ID is for a reroute definition</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TACTICAL">
+        <xsd:annotation>
+          <xsd:documentation>The TMI ID is for a tactical reroute definition</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CTOP">
+        <xsd:annotation>
+          <xsd:documentation>The TMI ID is for a CTOP</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="impactingConditionCodeType">
+    <xsd:annotation>
+      <xsd:documentation>TMI Impacting Condition Code.  This field represents all of the values needed to report impacting conditions for OPSNET.  
+ Code     Category             Cause                                    Opsnet Text                                       Advisory Text
+ -------- -------------------- ---------------------------------------- ------------------------------------------------- ------------------------------------
+ 3001     |Equipment           |Equipment                               |Equipment, Equipment                             |EQUIPMENT / OUTAGE
+ 4001     |Runway/Taxi         |Disabled Aircraft                       |Runway/Taxi, Disabled Aircraft                   |RWY-TAXI / DISABLED AIRCRAFT
+ 4002     |Runway/Taxi         |LAHSO                                   |Runway/Taxi, LAHSO                               |RWY-TAXI / LAHSO
+ 4004     |Runway/Taxi         |Noise Abatement                         |Runway/Taxi, Noise Abatement                     |RWY-TAXI / NOISE ABATEMENT
+ 4005     |Runway/Taxi         |Rwy Change - Operational Advantage      |Runway/Taxi, Rwy Change - Operational Advantage  |RWY-TAXI / RWY CHNG
+ 4006     |Runway/Taxi         |Rwy Change - Operational Necessity      |Runway/Taxi, Rwy Change - Operational Necessity  |RWY-TAXI / RWY CHNG
+ 4007     |Runway/Taxi         |Rwy Construction                        |Runway/Taxi, Rwy Construction                    |RWY-TAXI / CONSTRUCTION
+ 4008     |Runway/Taxi         |Rwy Maintenance                         |Runway/Taxi, Rwy Maintenance                     |RWY-TAXI / MAINTENANCE
+ 4009     |Runway/Taxi         |Rwy Obstruction                         |Runway/Taxi, Rwy Obstruction                     |RWY-TAXI / OBSTRUCTION
+ 5001     |Weather             |Fog                                     |Weather, Fog                                     |WEATHER / FOG 
+ 5002     |Weather             |Low Ceilings                            |Weather, Low Ceilings                            |WEATHER / LOW CEILINGS
+ 5003     |Weather             |Low Visibility                          |Weather, Low Visibility                          |WEATHER / LOW VISIBILITY
+ 5004     |Weather             |Rain                                    |Weather, Rain                                    |WEATHER / RAIN
+ 5005     |Weather             |Snow/Ice                                |Weather, Snow/Ice                                |WEATHER / SNOW-ICE
+ 5006     |Weather             |Thunderstorms                           |Weather, Thunderstorms                           |WEATHER / THUNDERSTORMS
+ 5007     |Weather             |Tornado/Hurricane                       |Weather, Tornado/Hurricane                       |WEATHER / TORNADO-HURRICANE
+ 5008     |Weather             |Wind                                    |Weather, Wind                                    |WEATHER / WIND
+ 5009     |Weather             |Poor or Nill Braking Action             |Weather, Poor or Nill Braking Action             |WEATHER / BRAKING ACTION
+ 5010     |Weather             |Runway Treatment                        |Weather, Runway Treatment                        |WEATHER / RUNWAY TREATMENT
+ 5011     |Weather             |Lightning Strike                        |Weather, Lightning Strike                        |WEATHER / LIGHTNING STRIKE
+ 6001     |Volume/Center       |Compacted Demand                        |Volume, Center, Compacted Demand                 |VOLUME / COMPACTED DEMAND
+ 6002     |Volume/Center       |Volume                                  |Volume, Center, Volume                           |VOLUME / VOLUME
+ 7001     |Volume/Terminal     |Compacted Demand                        |Volume, Terminal, Compacted Demand               |VOLUME / COMPACTED DEMAND
+ 7002     |Volume/Terminal     |Volume                                  |Volume, Terminal, Volume                         |VOLUME / VOLUME
+ 4003     |Volume/Terminal     |Multi-taxi                              |Volume, Terminal, Multi-taxi                     |VOLUME / MULTI-TAXI
+ 8001     |Other               |Air Show                                |Other, Air Show                                  |OTHER / AIR SHOW
+ 8002     |Other               |Aircraft Emergency                      |Other, Aircraft Emergency                        |OTHER / EMERGENCY
+ 8003     |Other               |Aircraft Radio                          |Other, Aircraft Radio                            |OTHER / AIRCRAFT RADIO
+ 8004     |Other               |Aircraft Stuck Mic                      |Other, Aircraft Stuck Mic                        |OTHER / AIRCRAFT STUCK MIC 
+ 8005     |Other               |Bird Strike                             |Other, Bird Strike                               |OTHER / BIRD STRIKE
+ 8006     |Other               |Bomb Threat                             |Other, Bomb Threat                               |OTHER / SECURITY
+ 8007     |Other               |External RFI                            |Other, External RFI                              |OTHER / EXTERNAL RFI 
+ 8008     |Other               |Fire                                    |Other, Fire                                      |OTHER / SECURITY
+ 8009     |Other               |Flight Check                            |Other, Flight Check                              |OTHER / FLIGHT CHECK
+ 8011     |Other               |Military Operations                     |Other, Military Operations                       |OTHER / SECURITY
+ 8012     |Other               |Non-radar procedures                    |Other, Non-radar procedures                      |OTHER / NON-RADAR PROCEDURES
+ 8013     |Other               |PRM Non-equipage                        |Other, PRM Non-equipage                          |OTHER / PRM NON-EQUIPAGE
+ 8014     |Other               |Security                                |Other, Security                                  |OTHER / SECURITY
+ 8015     |Other               |VIP Movement                            |Other, VIP Movement                              |OTHER / SECURITY
+ 8016     |Other               |Other                                   |Other, Other                                     |OTHER / OTHER
+ 8018     |Other               |LUAW                                    |Other, LUAW                                      |OTHER / LUAW
+</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="3001"/>
+      <xsd:enumeration value="4001"/>
+      <xsd:enumeration value="4002"/>
+      <xsd:enumeration value="4004"/>
+      <xsd:enumeration value="4005"/>
+      <xsd:enumeration value="4006"/>
+      <xsd:enumeration value="4007"/>
+      <xsd:enumeration value="4008"/>
+      <xsd:enumeration value="4009"/>
+      <xsd:enumeration value="5001"/>
+      <xsd:enumeration value="5002"/>
+      <xsd:enumeration value="5003"/>
+      <xsd:enumeration value="5004"/>
+      <xsd:enumeration value="5005"/>
+      <xsd:enumeration value="5006"/>
+      <xsd:enumeration value="5007"/>
+      <xsd:enumeration value="5008"/>
+      <xsd:enumeration value="5009"/>
+      <xsd:enumeration value="5010"/>
+      <xsd:enumeration value="5011"/>
+      <xsd:enumeration value="6001"/>
+      <xsd:enumeration value="6002"/>
+      <xsd:enumeration value="7001"/>
+      <xsd:enumeration value="7002"/>
+      <xsd:enumeration value="4003"/>
+      <xsd:enumeration value="8001"/>
+      <xsd:enumeration value="8002"/>
+      <xsd:enumeration value="8003"/>
+      <xsd:enumeration value="8004"/>
+      <xsd:enumeration value="8005"/>
+      <xsd:enumeration value="8006"/>
+      <xsd:enumeration value="8007"/>
+      <xsd:enumeration value="8008"/>
+      <xsd:enumeration value="8009"/>
+      <xsd:enumeration value="8011"/>
+      <xsd:enumeration value="8012"/>
+      <xsd:enumeration value="8013"/>
+      <xsd:enumeration value="8014"/>
+      <xsd:enumeration value="8015"/>
+      <xsd:enumeration value="8016"/>
+      <xsd:enumeration value="8018"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="urn:us:gov:dot:faa:atm:tfm:tfmdataservice"
+            xmlns:fim="urn:us:gov:dot:faa:atm:tfm:flowinformation"
+            xmlns:tx="urn:us:gov:dot:faa:atm:tfm:tfmdataservice"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:tfmdataservice" 
+            version="2.0.5" 
+            elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:flowinformation" schemaLocation="FlowInformation.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:flightdata" schemaLocation="FlightData.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmrequestreplytypes" schemaLocation="TfmRequestReplyTypes.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:complexType name="tfmdataStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Defines a TFMData status reported to NEMS.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="service">
+        <xsd:annotation>
+          <xsd:documentation>Provides the SWIM service name e.g. TFMData.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="businessFunc">
+        <xsd:annotation>
+          <xsd:documentation>Provides the business function name within the service that the status applies to.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="facility">
+        <xsd:annotation>
+          <xsd:documentation>Provides the facility name that is contributing to the message flow.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="direction">
+        <xsd:annotation>
+          <xsd:documentation>Provides the flow direction relative to the service that is reporting the status.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="IN"/>
+            <xsd:enumeration value="OUT"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="state">
+        <xsd:annotation>
+          <xsd:documentation>Provides the state of the message flow in the service. The system owning the status reporting service may have the message flow enabled or disabled.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ENABLED"/>
+            <xsd:enumeration value="DISABLED"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="time" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Provides the time that a particular data flow received/transmitted a message.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="numberMsgs" type="xsd:nonNegativeInteger">
+        <xsd:annotation>
+          <xsd:documentation>Provides number of messages received or transmitted for the particular service:business function:facility:direction.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="tfmDataService">
+    <xsd:annotation>
+      <xsd:documentation>The TFMData service provides Traffic Flow Management Data to NAS Users and CDM Users. It consists of both flight data and traffic management initiative data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name="fiOutput" type="fim:fiOutputType">
+          <xsd:annotation>
+            <xsd:documentation>Flow Information Message consisting of TMI definitions.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="tfmsStatusOutput">
+          <xsd:annotation>
+            <xsd:documentation>TFM Data Service status reports.</xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+            <xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="status" type="tx:tfmdataStatusType" minOccurs="1" maxOccurs="unbounded">
+                  <xsd:annotation>
+                    <xsd:documentation>TFMData Status Report.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:choice>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

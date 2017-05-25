@@ -1,0 +1,715 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1582154267407,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "pluginVersion": "6.6.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  count(distinct airport)\nFROM\n  tdes\nWHERE\n  $__timeFilter(createdat)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "D-ATIS Airports",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 5,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
+      },
+      "pluginVersion": "6.6.1",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  count(airport)\nFROM\n  tdes\nWHERE\n  $__timeFilter(createdat)\n  AND airport in ($airport)\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "D-ATIS Message Count",
+      "type": "stat"
+    },
+    {
+      "columns": [],
+      "datasource": null,
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 20,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 2,
+      "options": {},
+      "pageSize": 25,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "createdat",
+          "type": "date"
+        },
+        {
+          "alias": "Message",
+          "align": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "body",
+          "preserveFormat": true,
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "rownum",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Airport",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "airport",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select * from (\n  select createdat, airport, body, row_number() over (partition by airport order by createdat desc) as rownum from tdes\n) tmp\nwhere rownum < 2 AND $__timeFilter(createdat) AND airport in ($airport)\norder by createdat desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "D-ATIS Messages",
+      "transform": "table",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "PostgreSQL",
+        "definition": "select airport from tdes",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "airport",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "KOAK",
+            "value": "KOAK"
+          },
+          {
+            "selected": false,
+            "text": "KSEA",
+            "value": "KSEA"
+          },
+          {
+            "selected": false,
+            "text": "KSMF",
+            "value": "KSMF"
+          },
+          {
+            "selected": false,
+            "text": "KCMH",
+            "value": "KCMH"
+          },
+          {
+            "selected": false,
+            "text": "KOMA",
+            "value": "KOMA"
+          },
+          {
+            "selected": false,
+            "text": "KLGA",
+            "value": "KLGA"
+          },
+          {
+            "selected": false,
+            "text": "KSTL",
+            "value": "KSTL"
+          },
+          {
+            "selected": false,
+            "text": "KLAS",
+            "value": "KLAS"
+          },
+          {
+            "selected": false,
+            "text": "KMCI",
+            "value": "KMCI"
+          },
+          {
+            "selected": false,
+            "text": "KMIA",
+            "value": "KMIA"
+          },
+          {
+            "selected": false,
+            "text": "KCLE",
+            "value": "KCLE"
+          },
+          {
+            "selected": false,
+            "text": "KRNO",
+            "value": "KRNO"
+          },
+          {
+            "selected": false,
+            "text": "KDCA",
+            "value": "KDCA"
+          },
+          {
+            "selected": false,
+            "text": "KCLT",
+            "value": "KCLT"
+          },
+          {
+            "selected": false,
+            "text": "KPDX",
+            "value": "KPDX"
+          },
+          {
+            "selected": false,
+            "text": "KHPN",
+            "value": "KHPN"
+          },
+          {
+            "selected": false,
+            "text": "KEWR",
+            "value": "KEWR"
+          },
+          {
+            "selected": false,
+            "text": "KABQ",
+            "value": "KABQ"
+          },
+          {
+            "selected": false,
+            "text": "KMEM",
+            "value": "KMEM"
+          },
+          {
+            "selected": false,
+            "text": "KLIT",
+            "value": "KLIT"
+          },
+          {
+            "selected": false,
+            "text": "KBUR",
+            "value": "KBUR"
+          },
+          {
+            "selected": false,
+            "text": "KSJC",
+            "value": "KSJC"
+          },
+          {
+            "selected": false,
+            "text": "KONT",
+            "value": "KONT"
+          },
+          {
+            "selected": false,
+            "text": "KMKE",
+            "value": "KMKE"
+          },
+          {
+            "selected": false,
+            "text": "KBDL",
+            "value": "KBDL"
+          },
+          {
+            "selected": false,
+            "text": "KFLL",
+            "value": "KFLL"
+          },
+          {
+            "selected": false,
+            "text": "KSAT",
+            "value": "KSAT"
+          },
+          {
+            "selected": false,
+            "text": "TJSJ",
+            "value": "TJSJ"
+          },
+          {
+            "selected": false,
+            "text": "KSLC",
+            "value": "KSLC"
+          },
+          {
+            "selected": false,
+            "text": "KMDW",
+            "value": "KMDW"
+          },
+          {
+            "selected": false,
+            "text": "KADW",
+            "value": "KADW"
+          },
+          {
+            "selected": false,
+            "text": "KBWI",
+            "value": "KBWI"
+          },
+          {
+            "selected": false,
+            "text": "KPHL",
+            "value": "KPHL"
+          },
+          {
+            "selected": false,
+            "text": "KBOS",
+            "value": "KBOS"
+          },
+          {
+            "selected": false,
+            "text": "KSNA",
+            "value": "KSNA"
+          },
+          {
+            "selected": false,
+            "text": "KBNA",
+            "value": "KBNA"
+          },
+          {
+            "selected": false,
+            "text": "KGSO",
+            "value": "KGSO"
+          },
+          {
+            "selected": false,
+            "text": "KTUL",
+            "value": "KTUL"
+          },
+          {
+            "selected": false,
+            "text": "KSFO",
+            "value": "KSFO"
+          },
+          {
+            "selected": false,
+            "text": "KOKC",
+            "value": "KOKC"
+          },
+          {
+            "selected": false,
+            "text": "KIAH",
+            "value": "KIAH"
+          },
+          {
+            "selected": false,
+            "text": "KELP",
+            "value": "KELP"
+          },
+          {
+            "selected": false,
+            "text": "KBUF",
+            "value": "KBUF"
+          },
+          {
+            "selected": false,
+            "text": "KPHX",
+            "value": "KPHX"
+          },
+          {
+            "selected": false,
+            "text": "KAUS",
+            "value": "KAUS"
+          },
+          {
+            "selected": false,
+            "text": "KBOI",
+            "value": "KBOI"
+          },
+          {
+            "selected": false,
+            "text": "KPBI",
+            "value": "KPBI"
+          },
+          {
+            "selected": false,
+            "text": "KDEN",
+            "value": "KDEN"
+          },
+          {
+            "selected": false,
+            "text": "KDTW",
+            "value": "KDTW"
+          },
+          {
+            "selected": false,
+            "text": "KCVG",
+            "value": "KCVG"
+          },
+          {
+            "selected": false,
+            "text": "KMCO",
+            "value": "KMCO"
+          },
+          {
+            "selected": false,
+            "text": "KMSP",
+            "value": "KMSP"
+          },
+          {
+            "selected": false,
+            "text": "KCHS",
+            "value": "KCHS"
+          },
+          {
+            "selected": false,
+            "text": "KIND",
+            "value": "KIND"
+          },
+          {
+            "selected": false,
+            "text": "KHOU",
+            "value": "KHOU"
+          },
+          {
+            "selected": false,
+            "text": "KIAD",
+            "value": "KIAD"
+          },
+          {
+            "selected": false,
+            "text": "KALB",
+            "value": "KALB"
+          },
+          {
+            "selected": false,
+            "text": "KLAX",
+            "value": "KLAX"
+          },
+          {
+            "selected": false,
+            "text": "KJAX",
+            "value": "KJAX"
+          },
+          {
+            "selected": false,
+            "text": "KSDF",
+            "value": "KSDF"
+          },
+          {
+            "selected": false,
+            "text": "KRDU",
+            "value": "KRDU"
+          },
+          {
+            "selected": false,
+            "text": "KRSW",
+            "value": "KRSW"
+          },
+          {
+            "selected": false,
+            "text": "KVNY",
+            "value": "KVNY"
+          },
+          {
+            "selected": false,
+            "text": "KJFK",
+            "value": "KJFK"
+          },
+          {
+            "selected": false,
+            "text": "KSAN",
+            "value": "KSAN"
+          },
+          {
+            "selected": false,
+            "text": "KMSY",
+            "value": "KMSY"
+          },
+          {
+            "selected": false,
+            "text": "PANC",
+            "value": "PANC"
+          },
+          {
+            "selected": false,
+            "text": "KDFW",
+            "value": "KDFW"
+          },
+          {
+            "selected": false,
+            "text": "PHNL",
+            "value": "PHNL"
+          },
+          {
+            "selected": false,
+            "text": "KORD",
+            "value": "KORD"
+          },
+          {
+            "selected": false,
+            "text": "KPIT",
+            "value": "KPIT"
+          },
+          {
+            "selected": false,
+            "text": "KATL",
+            "value": "KATL"
+          },
+          {
+            "selected": false,
+            "text": "KTEB",
+            "value": "KTEB"
+          },
+          {
+            "selected": false,
+            "text": "KTPA",
+            "value": "KTPA"
+          },
+          {
+            "selected": false,
+            "text": "KPVD",
+            "value": "KPVD"
+          },
+          {
+            "selected": false,
+            "text": "KDAL",
+            "value": "KDAL"
+          }
+        ],
+        "query": "select airport from tdes",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "D-ATIS",
+  "uid": "GMAGKtwWk",
+  "version": 2
+}

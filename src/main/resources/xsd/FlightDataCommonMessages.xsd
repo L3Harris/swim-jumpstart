@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:us:gov:dot:faa:atm:tfm:flightdatacommonmessages"
+            xmlns:nxce="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements"
+            xmlns:fce="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:flightdatacommonmessages" version="2.0.5" elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" schemaLocation="FICommonDataTypes.xsd"/>
+  <xsd:annotation>
+    <xsd:documentation>The FlightDataCommonMessages schema is that part of the NAS XML Schema Standard which describes those messages which are sent/received over multiple interfaces. The format of these messages are not constrained to what is enterable at a teletype such as is the ATFDCommonMessages schema. These messages are built from the data types defined in the TFDCoreElements schema which make use of standard XML schema data types defined by W3.</xsd:documentation>
+  </xsd:annotation>
+  <xsd:complexType name="flightPlanType">
+    <xsd:annotation>
+      <xsd:documentation>Flight Plan Information (FZ) message is used to provide TFMM with flight plan data for eligible flight plans.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this oceanic report data applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightAircraftSpecs" type="nxce:flightAircraftSpecificationType">
+        <xsd:annotation>
+          <xsd:documentation>Describes the aircraft specifications as related to flight data for the flight this flight plan information refers to. The data between the tags represents the aircraft type while the attributes describe additional information such as the number of aircraft this flight plan represents, special aircraft and equipment qualifiers and well as an indication to the aircraft engine type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="beaconCode" type="nxce:beaconCodeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Beacon Code of the flight this flight plan information refers to. This field is optional and will only be present when the data is available.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="speed" type="nxce:speedType">
+        <xsd:annotation>
+          <xsd:documentation>Speed of the flight this flight plan information refers to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="coordinationPoint" type="nxce:fixType">
+        <xsd:annotation>
+          <xsd:documentation>Coordination point of the flight this flight plan information refers to with respect to the facility coordinating the flight If the flight traverses multiple facilities, each facility may have a different coordination point.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="coordinationTime">
+        <xsd:annotation>
+          <xsd:documentation>Coordination time of the flight this flight plan information refers to with respect to the facility coordinating the flight If the flight traverses multiple facilities, each facility will have a different coordination time.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="nxce:coordinationTimeType"/>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="altitude" type="nxce:flightAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Altitudes (requested and assigned) of the flight this flight plan information refers to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="routeOfFlight" type="nxce:routeOfFlightType">
+        <xsd:annotation>
+          <xsd:documentation>Route of flight as filed or amended and as tailored for a particular facility, of the flight this flight plan information refers to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Route Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="diversionCancelData" type="ncsmDiversionCancelDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Diversion Cancel data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="flightPlanAmendmentType">
+    <xsd:annotation>
+      <xsd:documentation>Amendment data for an existing flight plan. The data contained will replace the previously stored data.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight plan amendment applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="newAircraftId" type="nxce:aircraftIdType">
+          <xsd:annotation>
+            <xsd:documentation>The new aircraft identification given to a flight previously stored and identified by the aircraft identification identified by the aircraft identification given as part of the qualified aircraft identification data. When the aircraftId is changed, it is the only field that may be amended.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="amendmentData" type="amendmentDataType">
+          <xsd:annotation>
+            <xsd:documentation>The new data given to a flight previously stored and identified by the aircraft identification identified by the aircraft identification given as part of the qualified aircraft identification data.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+      <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Route Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="diversionCancelData" type="ncsmDiversionCancelDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Diversion Cancel data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="amendmentDataType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the different elements of a flight plan which may be amended with the exception of the aircraftId. aircraftId is excluded as if amended, it must be the only element being amended, so is treated separately. Any of the elements herein defined may be present.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:all>
+      <xsd:element name="newFlightAircraftSpecs" nillable="true" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the flightAircraftSpecs data previously stored.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="nxce:flightAircraftSpecificationType"/>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="newBeaconCode" type="nxce:beaconCodeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the beaconCode data previously stored.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newSpeed" type="nxce:speedType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the speed data previously stored.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newCoordinationPoint" type="nxce:fixType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the coordinationPoint data previously stored for the dependent facility.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newCoordinationTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the coordinationTime data previously stored for the dependent facility.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="nxce:coordinationTimeType"/>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="newAltitude" type="nxce:flightAltitudeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the altitude(s) data previously stored.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newRouteOfFlight" type="nxce:routeOfFlightType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>New data for the routeOfFlight data previously stored for the dependent facility.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+  <xsd:complexType name="arrivalInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The Flow Control Arrival Information (AZ) Message is used to provide arrival date and time information for all eligible arriving flights.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this arrival information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="timeOfArrival" type="nxce:timeOfArrivalType">
+        <xsd:annotation>
+          <xsd:documentation>Time of Arrival contains either a flight's Estimated Time of Arrival (ETA) at the destination fix when in the dddd format or the time of a successfully processed Terminate Beacon Code (TB) message that caused the flight plan to be dropped from the ARTCC data base when in the format Addd or will contain an Estimated Time of Arrival at the flight's destination fix when in the format of Eddd.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmFlightTimeData" type="ncsmFlightTimeDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Flight Time Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="beaconCodeInformationType">
+    <xsd:annotation>
+      <xsd:documentation>Beacon Code Information provides TFMM with beacon code data on eligible flight plans from the ARTCC facilities.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this beacon code information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="beaconCode" type="nxce:beaconCodeType">
+        <xsd:annotation>
+          <xsd:documentation>Beacon Code is a four digit octal number representing the transponder code assigned to the flight this Beacon Code Information applies to or 9999 indicating beacon code deassignment.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="departureInformationType">
+    <xsd:annotation>
+      <xsd:documentation>Departure Information is used to provide TFMM certain flight plan departure related data for all eligible initially activated flight plans.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this departure information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightAircraftSpecs" type="nxce:flightAircraftSpecificationType">
+        <xsd:annotation>
+          <xsd:documentation>Flight Aircraft Specification indicates the number of aircraft in the flight and/or Special Aircraft Indicator separated by a virgule with an aircraft type separated by a virgule with an airborne equipment qualifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="timeOfDeparture">
+        <xsd:annotation>
+          <xsd:documentation>Time of Departure represents the actual departure time for the flight within this Departure Information message.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:dateTime">
+              <xsd:attribute name="estimated" type="xsd:boolean" use="optional">
+                <xsd:annotation>
+                  <xsd:documentation>Defines the time field to be estimated.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="timeOfArrival" type="nxce:timeOfArrivalType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Time of Arrival represents the estimated time of arrival of the flight, represented by this departure information message, at the destination in hours and minutes.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmFlightTimeData" type="ncsmFlightTimeDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Flight Time Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="flightPlanCancellationType">
+    <xsd:annotation>
+      <xsd:documentation>The Flow Control Cancellation (RZ) Messages are used to provide cancellation data for all eligible flight plans.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight plan cancellation applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cancelData" type="ncsmCancelDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Cancel data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="trackInformationType">
+    <xsd:annotation>
+      <xsd:documentation>Track Information is used to provide TFMM with selected current track and full data block information.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this oceanic report data applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="speed" type="nxce:groundSpeedType">
+        <xsd:annotation>
+          <xsd:documentation>Speed indicated as ground speed for the flight in this track information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="reportedAltitude" type="nxce:flightAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Reported Altitude for the flight in this track information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="position" type="nxce:latlongType">
+        <xsd:annotation>
+          <xsd:documentation>Position contains the Latitude and Longitude location for the flight in this track information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="timeAtPosition" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>The time at which the flight was at this position.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="ncsmTrackData" type="ncsmTrackDataType">
+          <xsd:annotation>
+            <xsd:documentation>The NCSM track data used when flight is not remodeled.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType">
+          <xsd:annotation>
+            <xsd:documentation>The NCSM route data used when flight is remodeled.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="boundaryCrossingUpdateType">
+    <xsd:annotation>
+      <xsd:documentation>Boundary Crossing Update is used to provide TFMM with current flight plan information on active eligible flights that are inbound from one ARTCC to another ARTCC facility.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this oceanic report data applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightAircraftSpecs" type="nxce:flightAircraftSpecificationType">
+        <xsd:annotation>
+          <xsd:documentation>Flight Aircraft Specification indicates the number of aircraft in the flight and/or Special Aircraft Indicator separated by a virgule with an aircraft type separated by a virgule with an airborne equipment qualifier.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="speed" type="nxce:speedType">
+        <xsd:annotation>
+          <xsd:documentation>Speed indicated as ground speed for the flight in this Boundary Crossing Update information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="boundaryPosition">
+        <xsd:annotation>
+          <xsd:documentation>Boundary Position indicates the boundary crossing point inbound to the ARTCC for the flight in this Boundary Crossing Update.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="nxce:fixType">
+              <xsd:attribute name="boundaryCrossingTime" type="xsd:dateTime" use="required">
+                <xsd:annotation>
+                  <xsd:documentation>Boundary crossing time.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="reportedAltitude" type="nxce:flightAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Reported Altitude for the flight in this Boundary Crossing Update information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="routeOfFlight" type="nxce:routeOfFlightType">
+        <xsd:annotation>
+          <xsd:documentation>Route of Flight contains route data for the flight in this Boundary Crossing Update information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Route Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmControlData" type="ncsmControlDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Control Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="oceanicReportType">
+    <xsd:annotation>
+      <xsd:documentation>Oceanic Report Type provides flight information for transoceanic flights and is generated when an Oceanic Position Report is received via NADIN.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this oceanic report data applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="speed" type="nxce:groundSpeedType">
+        <xsd:annotation>
+          <xsd:documentation>Speed indicated ground speed for the flight in this Oceanic Report Type information.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="plannedPositionData" minOccurs="0" maxOccurs="2">
+        <xsd:annotation>
+          <xsd:documentation>Planned Position Data is a container for all related Planned Position Data for the flight associated with this Oceanic Report Type.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="nxce:oceanicPositionDataType">
+              <xsd:attribute name="planNumber" type="xsd:integer">
+                <xsd:annotation>
+                  <xsd:documentation>Planned position number.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:attribute>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="reportedPositionData" type="nxce:oceanicPositionDataType">
+        <xsd:annotation>
+          <xsd:documentation>Reported Position Data is a container for all related Reported Position Data for the flight associated with this Oceanic Report Type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:choice>
+        <xsd:element name="ncsmTrackData" type="ncsmTrackDataType">
+          <xsd:annotation>
+            <xsd:documentation>The NCSM track data used when flight is not remodeled.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType">
+          <xsd:annotation>
+            <xsd:documentation>The NCSM route data used when flight is remodeled.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmAirlineDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Airline Data Type is to provide airline related data for a flight that may be used in conjunction with other message types or as separate message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="flightStatusAndSpec" type="ncsmFlightStatusAndSpecDataType">
+        <xsd:annotation>
+          <xsd:documentation>Flight Status, characteristics, and aircraft type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="etd" type="nxce:etdFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightTimeData" type="nxce:flightTimeDataType">
+        <xsd:annotation>
+          <xsd:documentation>Flight time data type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="diversionIndicator" type="nxce:diversionIndicatorType">
+        <xsd:annotation>
+          <xsd:documentation>Flight's diversion state.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType">
+        <xsd:annotation>
+          <xsd:documentation>RVSM Compliance status: Equipped, current compliance, and future Compliance.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="arrivalFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="remarksKeywords" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>This element contains a comma delimited list of Keywords found in field 11: NRP, LIFEGUARD, CATIII, ALTRV, SWAP, DVRSN, DIVERT, ADCUS, FCA, WXRTE, HAR, PTP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmDiversionCancelDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Diversion Cancel Data type is to notify that a message/event was received that caused an existing flight to be canceled and a new flight to be created because of diversion.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="canceledFlightReference" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>The reference number of the diversion canceled flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newFlightReference" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>The reference number of the new flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmCancelDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Cancel Data type is to encapsulate that that may be sent as a specific message or to be incorporated in other messages.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="newFlightId" type="nxce:aircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>The new flight identifiers.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="newFlightReference" type="xsd:integer">
+        <xsd:annotation>
+          <xsd:documentation>The new flight reference number.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmControlDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Control data type is to define the control data that can be included in a separate distinct message or incorporate as part of another message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="ctd" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Control time of departure.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cta" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Control time of arrival.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="octd" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Original Control Time of Departure preserves the first controlled departure time (CTD, a.k.a. EDCT), for the current CTL_ELEM, for a flight. Set on the first EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="octa" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Original Control Time of Arrival preserves the first controlled arrival time, for the current CTL_ELEM, for a flight. Set on the first EDCT received and cleared only when the EDCT is purged.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlElement" type="xsd:string">
+        <xsd:annotation>
+          <xsd:documentation>Control element: Airport, Sector, etc. that caused the control time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmControlInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Control Information message is to provide control data for the flight on TFMS specific Messages and Events.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight management information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="etd" type="nxce:etdFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="controlIndicator" type="nxce:controlIndicatorType">
+        <xsd:annotation>
+          <xsd:documentation>Enumerated value - CONTROL_ACTIVE or CONTROL_CANCELED. When CONTROL_ACTIVE is set the ncsmControlData element is included. When CONTROL_CANCELED is set the ncsmControlData element is not included.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmControlData" type="ncsmControlDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Control data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightCreateOrModifyInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Create or Modify Information message is to provide modification to airline related data for a flight on TFMS specific Messages and Events.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight management information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="airlineData" type="ncsmAirlineDataType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft data containing status, aircraft specification, and flight times.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="diversionCancelData" type="ncsmDiversionCancelDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Diversion Cancel data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightRouteDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Data is to define Route data that can be included into a new message or incorporated as added data in another/existing message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="etd" type="nxce:etdFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="diversionIndicator" type="nxce:diversionIndicatorType">
+        <xsd:annotation>
+          <xsd:documentation>Flight's diversion state.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType">
+        <xsd:annotation>
+          <xsd:documentation>RVSM Compliance status: Equipped, current compliance, and future Compliance.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:sequence minOccurs="0">
+        <xsd:element name="dp" type="nxce:adaptedRoutNameType">
+          <xsd:annotation>
+            <xsd:documentation>Departure Procedure name and type.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="dpTransitionFix" type="nxce:fixNameType">
+          <xsd:annotation>
+            <xsd:documentation>Departure Procedure transition fix name.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:sequence minOccurs="0">
+        <xsd:element name="star" type="nxce:adaptedRoutNameType">
+          <xsd:annotation>
+            <xsd:documentation>STAR Procedure name and type.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="starTransitionFix" type="nxce:fixNameType">
+          <xsd:annotation>
+            <xsd:documentation>STAR Procedure transition fix name.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:sequence>
+      <xsd:element name="arrivalFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="departureFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Departure fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="nextPosition" type="nxce:positionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Position of next non expired event in the modeled route of flight. The modeled route of flight is a series of events consisting of a time, latitude, and longitude along the path of the flight. An expired event is a position already reached by the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightTraversalData2" type="nxce:flightTraversalDataType2">
+        <xsd:annotation>
+          <xsd:documentation>This form of the flightTraversalData element groups the data more like the original legacy message. Waypoints, sectors, fixes, airways, and centers are ORDERED LISTS within their parent elements.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="routeOfFlight" type="nxce:field10FormatType">
+        <xsd:annotation>
+          <xsd:documentation>This element contains the route of flight as filed or amended, i.e. copy of field 10. It is not the converted route.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="remarksKeywords" type="xsd:string" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>This element contains a comma delimited list of Keywords found in field 11: NRP, LIFEGUARD, CATIII, ALTRV, SWAP, DVRSN, DIVERT, ADCUS, FCA, WXRTE, HAR, PTP.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightTimeData" type="nxce:flightTimeDataType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Flight time data type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightRouteInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Route Information message is to provide data from TFMS on TFMS specific Messages and Events.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight management information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightStatusAndSpec" type="ncsmFlightStatusAndSpecDataType">
+        <xsd:annotation>
+          <xsd:documentation>Flight Status, characteristics, and aircraft model e.g. B737.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="altitude" type="nxce:flightAltitudeType">
+        <xsd:annotation>
+          <xsd:documentation>Flight altitude and type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="speed" type="nxce:speedType">
+        <xsd:annotation>
+          <xsd:documentation>Flight speed and type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ncsmRouteData" type="ncsmFlightRouteDataType">
+        <xsd:annotation>
+          <xsd:documentation>The NCSM Route Data.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightTimeDataType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Time Data Type is to provide a flight pertinent status and times.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="etd" type="nxce:etdFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ctd" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cta" type="xsd:dateTime" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType">
+        <xsd:annotation>
+          <xsd:documentation>RVSM Compliance status: Equipped, current compliance, and future Compliance.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightTimeInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Route Information message is to provide data from TFMS on TFMS specific Messages and Events.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight management information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightStatusAndSpec" type="ncsmFlightStatusAndSpecDataType">
+        <xsd:annotation>
+          <xsd:documentation>Flight Status, characteristics, and aircraft model e.g. B737.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="etd" type="nxce:etdFlightTimeType">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="ctd" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of departure and departure type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="cta" type="xsd:dateTime">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType">
+        <xsd:annotation>
+          <xsd:documentation>RVSM Compliance status: Equipped, current compliance, and future Compliance.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="departureFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Departure fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="arrivalFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmFlightStatusAndSpecDataType">
+    <xsd:annotation>
+      <xsd:documentation>The type provides flight status and aircraft model and characteristics associated with the aircraft/flight.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="flightStatus" type="nxce:flightStatusType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft model e.g. B737.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="aircraftModel" type="nxce:typeOfAircraftType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft model e.g. B737.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="aircraftspecification" type="nxce:flightAircraftSpecificationType">
+        <xsd:annotation>
+          <xsd:documentation>Aircraft information: Number of aircraft, aircraft type, and use class type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmSectorsInformationType">
+    <xsd:annotation>
+      <xsd:documentation>The purpose of the NCSM Flight Sectors Information message is to provide traversal data on an Airspace Assignment Events.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="qualifiedAircraftId" type="nxce:qualifiedAircraftIdType">
+        <xsd:annotation>
+          <xsd:documentation>Qualified Aircraft Identification of the flight this flight management information applies to.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="flightTraversalData2" type="nxce:flightTraversalDataType2">
+        <xsd:annotation>
+          <xsd:documentation>This form of the flightTraversalData element groups the data more like the original legacy message. Waypoints, sectors, fixes, airways, and centers are ORDERED LISTS within their parent elements.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ncsmTrackDataType">
+    <xsd:annotation>
+      <xsd:documentation>Supplementary NCM data for TRACK and POSITION type messages.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="eta" type="nxce:etaFlightTimeType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Estimated time of arrival and arrival type.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="rvsmData" type="nxce:rvsmComplianceType">
+        <xsd:annotation>
+          <xsd:documentation>RVSM Compliance status: Equipped, current compliance, and future Compliance.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="arrivalFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Arrival fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="departureFixAndTime" type="nxce:fixEventType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Departure fix and associated time.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+      <xsd:element name="nextEvent" type="nxce:positionType" minOccurs="0">
+        <xsd:annotation>
+          <xsd:documentation>Position of next non expired event in the modeled route of flight. The modeled route of flight is a series of events consisting of a time, latitude, and longitude along the path of the flight. An expired event is a position already reached by the flight.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

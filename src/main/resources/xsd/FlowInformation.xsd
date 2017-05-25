@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+            xmlns="urn:us:gov:dot:faa:atm:tfm:flowinformation"
+            xmlns:fcm="urn:us:gov:dot:faa:atm:tfm:ficommonmessages"
+            xmlns:fm2="urn:us:gov:dot:faa:atm:tfm:ficommonmessages2"
+            xmlns:nxce="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements"
+            xmlns:fce="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" 
+            xmlns:frt="urn:us:gov:dot:faa:atm:tfm:rapttimeline"
+            targetNamespace="urn:us:gov:dot:faa:atm:tfm:flowinformation" 
+            version="2.0.5" 
+            elementFormDefault="qualified">
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommonmessages" schemaLocation="FICommonMessages.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommonmessages2" schemaLocation="TfmFICmnMessages2.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:ficommondatatypes" schemaLocation="FICommonDataTypes.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:tfmdatacoreelements" schemaLocation="TFMDataCoreElements.xsd"/>
+  <xsd:import namespace="urn:us:gov:dot:faa:atm:tfm:rapttimeline" schemaLocation="FIRAPTTimeline.xsd"/>
+  <xsd:simpleType name="messageType">
+    <xsd:annotation>
+      <xsd:documentation>Message defines the type of the Flow Information message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="GADV">
+        <xsd:annotation>
+          <xsd:documentation>General Advisory</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AFP">
+        <xsd:annotation>
+          <xsd:documentation>Airspace Flow Program</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GDP">
+        <xsd:annotation>
+          <xsd:documentation>GDP/UDP Ground Delay Program</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GS">
+        <xsd:annotation>
+          <xsd:documentation>Ground Stop Program</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="BLKT">
+        <xsd:annotation>
+          <xsd:documentation>FADT Blanket</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CMPR">
+        <xsd:annotation>
+          <xsd:documentation>FADT Compression</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FADT">
+        <xsd:annotation>
+          <xsd:documentation>FADT Definition</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CTOP">
+        <xsd:annotation>
+          <xsd:documentation>Collaborative Trajectory Options Program.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FXA">
+        <xsd:annotation>
+          <xsd:documentation>FXA create/update/delete.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FXASF">
+        <xsd:annotation>
+          <xsd:documentation>FXA Secondary Filter create/update/delete.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="PARAM">
+        <xsd:annotation>
+          <xsd:documentation>AFP/GDP/GS/BLANKET/COMPRESSION parameter create/update/delete.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="REROUTE">
+        <xsd:annotation>
+          <xsd:documentation>Reroute Program</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="APTC">
+        <xsd:annotation>
+          <xsd:documentation>Airport Configuration Log Entry</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DICE">
+        <xsd:annotation>
+          <xsd:documentation>Deicing Log Entry</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="RSTR">
+        <xsd:annotation>
+          <xsd:documentation>Restriction Log Entry</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="RAPT">
+        <xsd:annotation>
+          <xsd:documentation>RAPT Timeline Data</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TMI_UPDATE">
+        <xsd:annotation>
+          <xsd:documentation>TMI (CDM) related data update.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="FOS_UPDATE">
+        <xsd:annotation>
+          <xsd:documentation>TMI (FOS) related data update.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TMI_FLIGHT_LIST">
+        <xsd:annotation>
+          <xsd:documentation>TMI related flight's data or monitored airport flight's data updates.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="fiMessageAttributes">
+    <xsd:annotation>
+      <xsd:documentation>Defines the possible message attributes associated with a Flow Information message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="sensitivity" type="nxce:sensitivityType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Defines the sensitivity of the data for distribution: R - government agency only, A - all users including government, D - all users except government because duplicate.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sensReason" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Indicates the reason the message is sensitive: FM - Military flight, FS - sensitive flight, DR - data restriction. Note: FM and FS have precedence over DR. Only present in a sensitive=R message.</xsd:documentation>
+      </xsd:annotation>
+      <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="FM"/>
+      <xsd:enumeration value="FS"/>
+      <xsd:enumeration value="DR"/>
+      </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="visDomain" type="nxce:tmiVisibilityDomainType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The visibility domain defines the scope of the distribution of the message. Possible values are PUBLIC,  SHARED, LOCAL, or PRIVATE. PUBLIC is visible across all Centers, SHARED is visible to only to a list of Centers, LOCAL it is visible at a single Center, PRIVATE it is only visible to a single user within a specific Center. </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="destinationCodes" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The keyword ALL if visibility domain is GLOBAL, a comma delimited list of sites/facilities/airlines/IDP Codes for SHARED, or a single site/facility/airline/IDP Code for LOCAL/PRIVATE</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="userId" type="xsd:string" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>The identity of a specific user. Required in case of PRIVATE visibility domain.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sourceFacility" type="nxce:facilityIdentifierType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The sourceFacility identifies the facility from which the Flow Information Message originated.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="sourceTimeStamp" type="xsd:dateTime" use="required">
+      <xsd:annotation>
+        <xsd:documentation>The sourceTimeStamp identifies the time the original message that triggered this message to be sent was sent by the facility identified by attribute sourceFacility.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="msgType" type="messageType" use="required">
+      <xsd:annotation>
+        <xsd:documentation>Indicates the trigger for generation of the message.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="refresh" type="fce:refreshType" use="optional">
+      <xsd:annotation>
+        <xsd:documentation>Indicates that the message is a refresh (RFRS) of a previous message or a new/update (NEW) message.</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="fiOutputType">
+    <xsd:annotation>
+      <xsd:documentation>Defines the Flow Information message.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="fiMessage">
+        <xsd:annotation>
+          <xsd:documentation>General Flow Information message container.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent>
+            <xsd:extension base="fiMessageAttributes">
+              <xsd:annotation>
+                <xsd:documentation>Defines the attributes for the Flow Information message.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:sequence>
+                <xsd:element name="destination" type="fm2:requestorIdType" minOccurs="0">
+                  <xsd:annotation>
+                    <xsd:documentation>Uniquely identifies this request.</xsd:documentation>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:choice>
+                  <xsd:element name="generalAdvisory" type="fcm:generalAdvisoryType">
+                    <xsd:annotation>
+                      <xsd:documentation>General Advisory Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="afpAdvisory" type="fcm:afpAdvisoryMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update Airspace Flow Program Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="afpCancel" type="fcm:afpCancelMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Cancel Airspace Flow Program Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="fadtBcast" type="fm2:fadtReqType">
+                    <xsd:annotation>
+                      <xsd:documentation>FADT Broadcast - R13 preferred way of communicating creations, updates, cancellations of AFP,GDP, and GS programs.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gdpAdvisory" type="fcm:gdpAdvisoryMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update GDP/UDP Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gdpCancel" type="fcm:gdpCancelMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Cancel GDP/UDP Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gdpBlanket" type="fcm:gdpBlanketMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update GDP/UDP Blanket Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gdpCompression" type="fcm:gdpCompressionMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update GDP/UDP Compression Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="afpCompression" type="fcm:afpCompressionMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update GDP/UDP Compression Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gsAdvisory" type="fcm:gsAdvisoryMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update GS Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="gsCancel" type="fcm:gsCancelMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Cancel GS Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="feaFca" type="fcm:fca">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update/Cancel FEA/FCA Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="fxaSecFiltersUpd" type="fm2:fxaSecondaryFilterType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update FEA/FCA secondary filters update.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="fxaSecFiltersDel" type="fm2:secondaryFilterDelType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update FEA/FCA secondary filters delete.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="reroute" type="fm2:rerouteMessageType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update/Cancel Reroute Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="ctopDefinition" type="fcm:ctopTmiType">
+                    <xsd:annotation>
+                      <xsd:documentation>Initial/Update CTOP Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="ctopCancel" type="fcm:ctopCancel">
+                    <xsd:annotation>
+                      <xsd:documentation>Cancel Message.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="deicingMessage" type="fcm:deicingType">
+                    <xsd:annotation>
+                      <xsd:documentation>Deicing report.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="restrictionMessage" type="fcm:restrictionType">
+                    <xsd:annotation>
+                      <xsd:documentation>The restriction report.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="airportConfigMessage" type="fcm:airportConfigType">
+                    <xsd:annotation>
+                      <xsd:documentation>The airport configuration report.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="paramAfpGdpUpdt" type="fm2:paramAfpGdpType">
+                    <xsd:annotation>
+                      <xsd:documentation>Air Flow Program (AFP) or Ground Delay Program (GDP) TMI parameter create/update.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="paramGsUpdt" type="fm2:paramGsType">
+                    <xsd:annotation>
+                      <xsd:documentation>Ground Stop (GS) TMI parameter create/update.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="paramBlanketUpdt" type="fm2:paramBlanketType">
+                    <xsd:annotation>
+                      <xsd:documentation>AFP/GDP Blanket parameters create or update for TMI.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="paramComprUpdt" type="fm2:paramCompressionType">
+                    <xsd:annotation>
+                      <xsd:documentation>AFP/GDP Compression parameter update or create TMI.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="paramDelete" type="fm2:paramDeleteType">
+                    <xsd:annotation>
+                      <xsd:documentation>Parameter delete for Fuel Advisory Delay TMI.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="raptTimelineMessage" type="frt:raptDataType">
+                    <xsd:annotation>
+                      <xsd:documentation>The RAPT Timeline data.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="cdmUpdateData">
+                    <xsd:annotation>
+                      <xsd:documentation>TMI related data messages.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                      <xsd:choice>
+                        <xsd:element name="reinstatedFlight" type="fm2:singleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Reinstated flight data.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="flightIdChange">
+                          <xsd:annotation>
+                            <xsd:documentation>Flight reference number change of a controlled flight.</xsd:documentation>
+                          </xsd:annotation>
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="flightInfo" type="fm2:controlledFlightType">
+                                <xsd:annotation>
+                                  <xsd:documentation>Defines the controlled flight with new reference number.</xsd:documentation>
+                                </xsd:annotation>
+                              </xsd:element>
+                              <xsd:element name="previousFlightId" type="xsd:string">
+                                <xsd:annotation>
+                                  <xsd:documentation>Previous flight reference number.</xsd:documentation>
+                                </xsd:annotation>
+                              </xsd:element>
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="diversionCancel" type="fm2:controlledFlightType">
+                          <xsd:annotation>
+                            <xsd:documentation>Diversion cancel of a controlled flight.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="diversionRecovery" type="fm2:controlledFlightType">
+                          <xsd:annotation>
+                            <xsd:documentation>Diversion recovery of a controlled flight.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="subStatus" type="fm2:edctOnOffNotificationMessageType">
+                          <xsd:annotation>
+                            <xsd:documentation>Notification of EDCT On/Off Status.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="gdpTermination" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>GDP flight termination notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="edctUpdate" type="fm2:singleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Flight EDCT update notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="dasDelay" type="fm2:singleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Flight DAS delay notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="gaapSlotAssignment" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>GAAP flight assignment notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="scsBridgingUpdate" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Flight's SCS bridging status notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="scsStatus" type="fm2:edctOnOffNotificationMessageType">
+                          <xsd:annotation>
+                            <xsd:documentation>SCS flight's status notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="scsUpdate" type="fm2:singleSlotType"/>
+                        <xsd:element name="dropoutFlight" type="fm2:singleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Controlled fight dropout notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="recontrolledFlight" type="fm2:singleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Re-controlled flight notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="substitutions" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Slot substitutions.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="holdAllSlots" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Hold all slots notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="releaseAllSlots" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Release all slots notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="timeoutCancelledFlight" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Notification of a timeout cancellation of a controlled flight.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="adaptiveCompressionUpdate" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Adaptive compression update notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="udpBridgingUpdate" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>UDP bridging update notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="scopeReduction" type="fm2:multipleSlotType">
+                          <xsd:annotation>
+                            <xsd:documentation>Scope reduction notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="acStatus" type="fm2:edctOnOffNotificationMessageType">
+                          <xsd:annotation>
+                            <xsd:documentation>Flight EDCT On/Off notification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="bridgingStatus">
+                          <xsd:annotation>
+                            <xsd:documentation>Bridging status notification.</xsd:documentation>
+                          </xsd:annotation>
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="status" type="fce:onOffType">
+                                <xsd:annotation>
+                                  <xsd:documentation>Bridging status On or Off.</xsd:documentation>
+                                </xsd:annotation>
+                              </xsd:element>
+                              <xsd:element name="elementName" type="fce:controlElementNameType">
+                                <xsd:annotation>
+                                  <xsd:documentation>Controlling element name.</xsd:documentation>
+                                </xsd:annotation>
+                              </xsd:element>
+                              <xsd:element name="airCarrierName" type="xsd:string">
+                                <xsd:annotation>
+                                  <xsd:documentation>Air carrier name.</xsd:documentation>
+                                </xsd:annotation>
+                              </xsd:element>
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:choice>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="fosData" type="fm2:fosFlowInfoOutputType">
+                    <xsd:annotation>
+                      <xsd:documentation>FOS Flow Information output.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element name="tmiFlightDataList">
+                    <xsd:annotation>
+                      <xsd:documentation>General flight data for flights associated with any TMI or monitored airports.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="flightData" type="fm2:genFlightDataType" minOccurs="1" maxOccurs="unbounded">
+                          <xsd:annotation>
+                            <xsd:documentation>Data associated with the flight along with its identification.</xsd:documentation>
+                          </xsd:annotation>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="eramAmendmentStatusUpdate" type="fm2:rerouteAmendmentResponseType">
+                    <xsd:annotation>
+                      <xsd:documentation>Details of the flights last ERAM amendment request.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:choice>
+              </xsd:sequence>
+            </xsd:extension>
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
