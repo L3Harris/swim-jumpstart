@@ -18,7 +18,7 @@ public class MessageFileOutput extends Output {
 
     public MessageFileOutput(Config config) {
         super(config);
-        // TODO change the diretory from config
+        // TODO change the directory from config
         outputDirectory = new File("./log/");
     }
 
