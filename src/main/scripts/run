@@ -1,1 +1,0 @@
-java "$@" -jar $(dirname "$0")/../lib/jumpstart-jar-with-dependencies.jar
