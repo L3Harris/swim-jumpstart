@@ -6,4 +6,4 @@ The Jumpstart allows you to log the message rate metrics and/or messages to the 
 
 ## Usage
 
-Download the applicable package for your use OS and desired language.
+Download the applicable package for your use OS and desired language. Within, you'll find further instructions to operate the consumer.
